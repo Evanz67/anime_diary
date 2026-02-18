@@ -1,10 +1,13 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { NavBar } from "@/components/custom/navbar"; 
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
+const inter = Inter({ subsets: ['latin'] })
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -18,11 +21,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
-        {children}
+          <div className="min-h-screen flex flex-col">
+            <NavBar />
+            <main className="container mx-auto flex-1 p-4 text-red-500 relative">
+                {children}         
+            </main>
+          </div>
       </body>
     </html>
   );
