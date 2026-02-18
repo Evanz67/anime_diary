@@ -1,0 +1,9 @@
+User Product Needs: An anime recorder list where you can add the name of anime to a list to track what anime has been watched and finished
+
+Features:
+Adding anime name
+Removing anime name
+Updating anime name
+Display anime name on a list
+Series relating to each other must be grouped together
+Add user rating
