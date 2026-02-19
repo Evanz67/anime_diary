@@ -4,7 +4,7 @@ import { Home, Rows3, Trash, BookOpen } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
-  { title: "Anime List", url: "/inbox", icon: Rows3 },
+  { title: "Anime List", url: "/anime_list", icon: Rows3 },
   { title: "Dropped List", url: "/calendar", icon: Trash },
 ];
 
