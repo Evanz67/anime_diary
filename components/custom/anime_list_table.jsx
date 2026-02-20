@@ -16,12 +16,16 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react"
+import { Modal } from "@/components/custom/modal"
+import { ListCard } from "@/components/custom/list_card"
 
 export function AnimeListTable({ columns, data, pageSize = 10 }) {
   const [pagination, setPagination] = useState({
     pageIndex: 0, 
     pageSize: pageSize,
   })
+  const [animeName, setAnimeName] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const totalPages = Math.ceil(data.length / pagination.pageSize)
   const startIndex = pagination.pageIndex * pagination.pageSize
@@ -42,13 +46,18 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
     pageIndex: totalPages - 1 
   }))
 
+  const handleRow = (row) => {
+    setAnimeName(row.anime)
+    setIsModalOpen(true)
+  }
+
   return (
     <div className="space-y-4">
       {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-muted">
               {columns.map((column) => (
                 <TableHead key={column.key}>{column.name}</TableHead>
               ))}
@@ -57,7 +66,11 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
           <TableBody>
             {paginatedData.length > 0 ? (
               paginatedData.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
+                <TableRow 
+                  key={rowIndex}
+                  onClick={() => handleRow(row)}
+                  className="cursor-pointer"
+                >
                   {columns.map((column) => (
                     <TableCell key={column.key}>
                       {row[column.key]}
@@ -75,6 +88,110 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
           </TableBody>
         </Table>
       </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        animeName={animeName}
+      >
+        <ListCard >     
+          <Table>
+            <TableHeader>
+              <TableRow className="text-lg">
+                <TableHead className="font-extrabold">Episode</TableHead>
+                <TableHead className="font-extrabold">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Episode 1</TableCell>
+                <TableCell>Watched</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow> 
+              <TableRow>
+                <TableCell>Episode 2</TableCell>
+                <TableCell>Not Watched</TableCell>
+              </TableRow>         
+            </TableBody>
+          </Table>
+        </ListCard>
+      </Modal>
       
       {/* Pagination */}
       <div className="flex items-center justify-between">
