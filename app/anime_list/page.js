@@ -5,11 +5,12 @@ import { AnimeListTable } from "@/components/custom/anime_list_table"
 export default function AnimeList() {
 
   const data = [
-    { id: 1, anime: "Naruto", entries: 50 },
+    { id: 1, anime: "Naruto", entries: Math.max(50,100)},
     { id: 2, anime: "One Piece", entries: 70 },
     { id: 3, anime: "Attack on Titan", entries: 30 },
     { id: 4, anime: "My Hero Academia", entries: 40 },
     { id: 5, anime: "Demon Slayer", entries: 25 },
+    { id: 6, anime: "Fullmetal Alchemist", entries: 60 },
   ]
 
   const columns = [

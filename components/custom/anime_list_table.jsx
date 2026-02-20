@@ -44,6 +44,7 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
 
   return (
     <div className="space-y-4">
+      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -74,7 +75,8 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
           </TableBody>
         </Table>
       </div>
-
+      
+      {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
           Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of {data.length}
