@@ -16,7 +16,7 @@ export function Modal({ isOpen, onClose, animeName, children }) {
           <DialogTitle className="text-xl italic">{animeName}</DialogTitle>
           <DialogDescription>28 Entries</DialogDescription>
         </DialogHeader>
-        <div className="mt-4 max-h-[60vh] min-h-[30vh] overflow-y-auto">
+        <div className="mt-4 max-h-[60vh] min-h-[30vh] overflow-x-auto">
           {children}
         </div>
       </DialogContent>
