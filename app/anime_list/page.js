@@ -26,7 +26,6 @@ export default function AnimeList() {
   const [isModalAddEntriesOpen, setIsModalAddEntriesOpen] = useState(false)
   const [animeName, setAnimeName] = useState("")
   
-  
   const handleModalEntries = (row) => {
     setAnimeName(row.anime)
     setIsModalEntriesOpen(true)

@@ -11,37 +11,33 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 
-export function ModalAddEntries({ isOpen, onClose }) {
+export function SignUp({ isOpen, onClose }) {
   const { register, handleSubmit, reset } = useForm()
 
   const onSubmit = (data) => {
     console.log(data)
-    alert(`Anime "${data.name}" added!`)
+    alert(`User "${data.email}" signed up!`)
     reset()
     onClose()
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
+      <DialogContent className="sm:max-w-sm lg:max-w-md ">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Add Anime Entry</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-center">Sign Up</DialogTitle>
         </DialogHeader>     
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
-            <FieldLabel className="italic">Entry Name</FieldLabel>
-            <Input {...register("name")} placeholder="Enter an entry name" />
+            <FieldLabel className="italic">Email</FieldLabel>
+            <Input {...register("email")} placeholder="Enter email address" />
           </Field>
           <Field>
-            <FieldLabel className="italic"># of Episode</FieldLabel>
-            <Input {...register("episode")} placeholder="Enter number of episodes" />
-          </Field>
-          <Field>
-            <FieldLabel className="italic">Type</FieldLabel>
-            <Input {...register("type")} placeholder="Enter type (e.g. TV, OVA, Movie)" />
+            <FieldLabel className="italic">Password</FieldLabel>
+            <Input {...register("password")} placeholder="Enter password" />
           </Field>
           <div className="flex justify-center">
-            <Button type="submit" variant="secondary" size="lg">Add</Button>
+            <Button type="submit" variant="secondary" size="lg">Register</Button>
           </div>        
         </form>
       </DialogContent>

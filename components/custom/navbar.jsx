@@ -1,5 +1,10 @@
+"use client"
+
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { SignUp } from "@/components/custom/authentication/signup";
+import { Login } from "@/components/custom/authentication/login";
 import { Home, Rows3, Trash, BookOpen } from "lucide-react";
 
 const menuItems = [
@@ -9,15 +14,32 @@ const menuItems = [
 ];
 
 export function NavBar() {
+  const [isModalSignUpOpen, setIsModalSignUpOpen] = useState(false)
+  const [isModalLoginOpen, setIsModalLoginOpen] = useState(false)
+
+  const handleModalSignUp = () => {
+  setIsModalSignUpOpen(true)
+  }
+
+  const handleCloseModalSignUp = () => {
+    setIsModalSignUpOpen(false)
+  }
+
+  const handleModalLogin = () => {
+  setIsModalLoginOpen(true)
+  }
+
+  const handleCloseModalLogin = () => {
+    setIsModalLoginOpen(false)
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between">
-        {/* Logo */}
         <div className="flex items-center gap-2 ml-20">
           <span className=""><BookOpen className="h-13 w-15"/></span>
           <span className="font-bold tracking-wider text-3xl italic">Anime Diary</span>
         </div>
-
         {/* Navigation Links */}
         <nav className="flex items-center gap-6">
           {menuItems.map((item) => (
@@ -31,13 +53,14 @@ export function NavBar() {
             </Link>
           ))}
         </nav>
-
         {/* Auth Buttons */}
         <div className="flex items-center gap-2 mr-8">
-          <Button variant="ghost" size="lg">Login</Button>
-          <Button size="lg" className="text-white">Sign Up</Button>
+          <Button variant="ghost" size="lg" onClick={handleModalLogin}>Login</Button>
+          <Button size="lg" className="text-white" onClick={handleModalSignUp}>Sign Up</Button>
         </div>
       </div>
+      <SignUp isOpen={isModalSignUpOpen} onClose={handleCloseModalSignUp} />
+      <Login isOpen={isModalLoginOpen} onClose={handleCloseModalLogin} />
     </header>
   );
 }
