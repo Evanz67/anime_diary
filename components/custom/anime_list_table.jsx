@@ -14,9 +14,9 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight,
+  ChevronsRight
 } from "lucide-react"
-import { Modal } from "@/components/custom/modal"
+import { ModalEntries } from "@/components/custom/modal_entries"
 import { ListCard } from "@/components/custom/list_card"
 
 export function AnimeListTable({ columns, data, pageSize = 10 }) {
@@ -90,7 +90,7 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
       </div>
 
       {/* Modal */}
-      <Modal
+      <ModalEntries
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         animeName={animeName}
@@ -107,18 +107,18 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
             <TableBody>
               <TableRow>
                 <TableCell>Episode 1</TableCell>
-                <TableCell>Watched</TableCell>
+                <TableCell>12</TableCell>
                 <TableCell>TV</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Episode 2</TableCell>
-                <TableCell>Not Watched</TableCell>
+                <TableCell>1</TableCell>
                 <TableCell>OVA</TableCell>
               </TableRow>                     
             </TableBody>
           </Table>
         </ListCard>
-      </Modal>
+      </ModalEntries>
       
       {/* Pagination */}
       <div className="flex items-center justify-between">

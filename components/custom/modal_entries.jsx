@@ -8,9 +8,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
-import { Plus, Minus } from 'lucide-react';
+import { FilePlusCorner, Trash2 } from 'lucide-react';
 
-export function Modal({ isOpen, onClose, animeName, children }) {
+export function ModalEntries({ isOpen, onClose, animeName, children }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">     
@@ -18,19 +18,21 @@ export function Modal({ isOpen, onClose, animeName, children }) {
           <DialogTitle className="text-xl italic">{animeName}</DialogTitle>
           <DialogDescription>28 Entries</DialogDescription>
         </DialogHeader>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <Button 
-            variant="outline"
-            size="icon">
-            <Plus className="h-4 w-4" />
+            variant="secondary"
+            size="lg"
+          >
+            <FilePlusCorner className="h-4 w-4" />
           </Button>
           <Button
-            variant="outline"
-            size="icon">
-            <Minus className="h-4 w-4" />
+            variant="secondary"
+            size="lg"
+          >
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
-        <div className="mt-2 max-h-[60vh] min-h-[30vh] overflow-x-auto">
+        <div className="mt-1 max-h-[60vh] min-h-[30vh] overflow-x-auto">
           {children}
         </div>
       </DialogContent>

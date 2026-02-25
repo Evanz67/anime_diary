@@ -1,6 +1,8 @@
 "use client"
 
-import { AnimeListTable } from "@/components/custom/anime_list_table"
+import { AnimeListTable } from "@/components/custom/anime_list_table";
+import { Button } from "@/components/ui/button";
+import { FilePlusCorner } from "lucide-react";
 
 export default function AnimeList() {
 
@@ -20,12 +22,28 @@ export default function AnimeList() {
 
   return (
     <div className="container mx-auto flex-1 p-4">
-      <h1 className="text-2xl font-bold mb-6">Anime Finished</h1>
-        <AnimeListTable 
-          columns={columns} 
-          data={data} 
-          pageSize={5} 
-        />
+      <div className="flex justify-between mb-4">
+        <h1 className="text-2xl font-bold">Anime Finished</h1>
+        <div className="flex gap-3">
+          <Button 
+          variant="secondary"
+          size="lg"
+          >
+            Add Series
+          </Button>
+          <Button 
+          variant="secondary"
+          size="lg"
+          >
+            Remove Series
+          </Button>
+        </div>    
+      </div>  
+      <AnimeListTable 
+        columns={columns} 
+        data={data} 
+        pageSize={5} 
+      />
     </div>
   );
 }
