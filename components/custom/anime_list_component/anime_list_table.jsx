@@ -16,39 +16,38 @@ import {
   ChevronsLeft,
   ChevronsRight
 } from "lucide-react"
-import { ModalEntries } from "@/components/custom/modal_entries"
-import { ListCard } from "@/components/custom/list_card"
 
-export function AnimeListTable({ columns, data, pageSize = 10 }) {
+export function AnimeListTable({ columns, data, pageSize, handleModalEntries }) {
   const [pagination, setPagination] = useState({
     pageIndex: 0, 
     pageSize: pageSize,
   })
-  const [animeName, setAnimeName] = useState("")
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const totalPages = Math.ceil(data.length / pagination.pageSize)
   const startIndex = pagination.pageIndex * pagination.pageSize
   const endIndex = startIndex + pagination.pageSize
   const paginatedData = data.slice(startIndex, endIndex)
 
-  const goToFirstPage = () => setPagination(prev => ({ ...prev, pageIndex: 0 }))
-  const goToPrevPage = () => setPagination(prev => ({ 
-    ...prev, 
-    pageIndex: Math.max(0, prev.pageIndex - 1) 
-  }))
-  const goToNextPage = () => setPagination(prev => ({ 
-    ...prev, 
-    pageIndex: Math.min(totalPages - 1, prev.pageIndex + 1) 
-  }))
-  const goToLastPage = () => setPagination(prev => ({ 
-    ...prev, 
-    pageIndex: totalPages - 1 
-  }))
-
-  const handleRow = (row) => {
-    setAnimeName(row.anime)
-    setIsModalOpen(true)
+  const goToFirstPage = () => {
+    setPagination(prev => ({ ...prev, pageIndex: 0 }))
+  }
+  const goToPrevPage = () => {
+    setPagination(prev => ({ 
+      ...prev, 
+      pageIndex: Math.max(0, prev.pageIndex - 1) 
+    }))
+  }
+  const goToNextPage = () => {
+    setPagination(prev => ({ 
+      ...prev, 
+      pageIndex: Math.min(totalPages - 1, prev.pageIndex + 1) 
+    }))
+  }
+  const goToLastPage = () => {
+    setPagination(prev => ({ 
+      ...prev, 
+      pageIndex: totalPages - 1 
+    }))
   }
 
   return (
@@ -68,7 +67,7 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
               paginatedData.map((row, rowIndex) => (
                 <TableRow 
                   key={rowIndex}
-                  onClick={() => handleRow(row)}
+                  onClick={() => handleModalEntries(row)}
                   className="cursor-pointer"
                 >
                   {columns.map((column) => (
@@ -88,38 +87,7 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
           </TableBody>
         </Table>
       </div>
-
-      {/* Modal */}
-      <ModalEntries
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        animeName={animeName}
-      >
-        <ListCard >     
-          <Table>
-            <TableHeader>
-              <TableRow className="text-lg">
-                <TableHead className="font-extrabold">Anime</TableHead>
-                <TableHead className="font-extrabold"># of Episodes</TableHead>
-                <TableHead className="font-extrabold">Type</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Episode 1</TableCell>
-                <TableCell>12</TableCell>
-                <TableCell>TV</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Episode 2</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>OVA</TableCell>
-              </TableRow>                     
-            </TableBody>
-          </Table>
-        </ListCard>
-      </ModalEntries>
-      
+            
       {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">

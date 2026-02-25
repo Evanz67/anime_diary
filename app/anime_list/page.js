@@ -1,8 +1,9 @@
 "use client"
 
-import { AnimeListTable } from "@/components/custom/anime_list_table";
+import { useState } from "react";
+import { AnimeListTable } from "@/components/custom/anime_list_component/anime_list_table";
 import { Button } from "@/components/ui/button";
-import { FilePlusCorner } from "lucide-react";
+import { Modal } from "@/components/custom/anime_list_component/anime_list_modal/modal";
 
 export default function AnimeList() {
 
@@ -20,6 +21,28 @@ export default function AnimeList() {
     { key: "entries", name: "# of Entries" },
   ]
 
+  const [isModalEntriesOpen, setIsModalEntriesOpen] = useState(false)
+  const [isModalAddAnimeOpen, setIsModalAddAnimeOpen] = useState(false)
+  const [animeName, setAnimeName] = useState("")
+  
+  
+  const handleModalEntries = (row) => {
+    setAnimeName(row.anime)
+    setIsModalEntriesOpen(true)
+  }
+
+  const handleCloseModalEntries = () => {
+    setIsModalEntriesOpen(false)
+  }
+
+  const handleModalAddAnime = () => {
+    setIsModalAddAnimeOpen(true)
+  }
+
+  const handleCloseModalAddAnime = () => {
+    setIsModalAddAnimeOpen(false)
+  }
+
   return (
     <div className="container mx-auto flex-1 p-4">
       <div className="flex justify-between mb-4">
@@ -28,12 +51,13 @@ export default function AnimeList() {
           <Button 
           variant="secondary"
           size="lg"
+          onClick={handleModalAddAnime}
           >
             Add Series
           </Button>
           <Button 
           variant="secondary"
-          size="lg"
+          size="lg"    
           >
             Remove Series
           </Button>
@@ -43,6 +67,14 @@ export default function AnimeList() {
         columns={columns} 
         data={data} 
         pageSize={5} 
+        handleModalEntries={handleModalEntries}
+      />
+      <Modal 
+        isModalEntriesOpen={isModalEntriesOpen}
+        handleCloseModalEntries={handleCloseModalEntries}
+        isModalAddAnimeOpen={isModalAddAnimeOpen}
+        handleCloseModalAddAnime={handleCloseModalAddAnime}
+        animeName={animeName}       
       />
     </div>
   );

@@ -5,7 +5,7 @@ import {
   CardTitle
 } from "@/components/ui/card"
 
-export function ListCard({ children }) {
+export function ModalCardEntries({ children }) {
   return (
     <Card className="h-full overflow-auto">
       <CardHeader>
