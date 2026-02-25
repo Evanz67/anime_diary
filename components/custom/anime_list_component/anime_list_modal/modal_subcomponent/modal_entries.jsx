@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FilePlusCorner, Trash2 } from 'lucide-react';
 
-export function ModalEntries({ isOpen, onClose, animeName, children }) {
+export function ModalEntries({ isOpen, onClose, animeName, handleOpenModalAddEntries, children }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">     
@@ -20,6 +20,7 @@ export function ModalEntries({ isOpen, onClose, animeName, children }) {
           <Button 
             variant="secondary"
             size="lg"
+            onClick={handleOpenModalAddEntries}
           >
             <FilePlusCorner className="h-4 w-4" />
           </Button>

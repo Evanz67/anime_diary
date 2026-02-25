@@ -6,12 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Field } from "@/components/ui/field"
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 
-export function ModalAddAnime({ isOpen, onClose }) {
+export function ModalAddEntries({ isOpen, onClose }) {
   const { register, handleSubmit, reset } = useForm()
 
   const onSubmit = (data) => {
@@ -25,11 +25,20 @@ export function ModalAddAnime({ isOpen, onClose }) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Add Anime Series</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Add Anime Entry</DialogTitle>
         </DialogHeader>     
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
-            <Input {...register("name")} placeholder="Enter anime series name" />
+            <FieldLabel className="italic">Entry Name</FieldLabel>
+            <Input {...register("name")} placeholder="Enter an entry name" />
+          </Field>
+          <Field>
+            <FieldLabel className="italic"># of Episode</FieldLabel>
+            <Input {...register("episode")} placeholder="Enter number of episodes" />
+          </Field>
+          <Field>
+            <FieldLabel className="italic">Type</FieldLabel>
+            <Input {...register("type")} placeholder="Enter type (e.g. TV, OVA, Movie)" />
           </Field>
           <div className="flex justify-center">
             <Button type="submit" variant="secondary" size="lg">Add</Button>
@@ -39,4 +48,3 @@ export function ModalAddAnime({ isOpen, onClose }) {
     </Dialog>
   );
 }
-  

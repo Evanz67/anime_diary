@@ -23,6 +23,7 @@ export default function AnimeList() {
 
   const [isModalEntriesOpen, setIsModalEntriesOpen] = useState(false)
   const [isModalAddAnimeOpen, setIsModalAddAnimeOpen] = useState(false)
+  const [isModalAddEntriesOpen, setIsModalAddEntriesOpen] = useState(false)
   const [animeName, setAnimeName] = useState("")
   
   
@@ -41,6 +42,14 @@ export default function AnimeList() {
 
   const handleCloseModalAddAnime = () => {
     setIsModalAddAnimeOpen(false)
+  } 
+
+  const handleModalAddEntries = () => {
+    setIsModalAddEntriesOpen(true)
+  }
+
+  const handleCloseModalAddEntries = () => {
+    setIsModalAddEntriesOpen(false)
   }
 
   return (
@@ -74,6 +83,9 @@ export default function AnimeList() {
         handleCloseModalEntries={handleCloseModalEntries}
         isModalAddAnimeOpen={isModalAddAnimeOpen}
         handleCloseModalAddAnime={handleCloseModalAddAnime}
+        isModalAddEntriesOpen={isModalAddEntriesOpen}
+        handleCloseModalAddEntries={handleCloseModalAddEntries}
+        handleOpenModalAddEntries={handleModalAddEntries}
         animeName={animeName}       
       />
     </div>

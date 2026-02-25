@@ -9,12 +9,16 @@ import {
 import { ModalEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_entries"
 import { ModalCardEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries"
 import { ModalAddAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_anime"
+import { ModalAddEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_entries"
 
 export function Modal({ 
     isModalEntriesOpen, 
     handleCloseModalEntries, 
     isModalAddAnimeOpen, 
-    handleCloseModalAddAnime, 
+    handleCloseModalAddAnime,
+    isModalAddEntriesOpen,
+    handleCloseModalAddEntries, 
+    handleOpenModalAddEntries,
     animeName 
   }) 
 {
@@ -23,6 +27,7 @@ export function Modal({
       <ModalEntries
         isOpen={isModalEntriesOpen}
         onClose={handleCloseModalEntries}
+        handleOpenModalAddEntries={handleOpenModalAddEntries}
         animeName={animeName}
       >
         <ModalCardEntries >     
@@ -52,6 +57,10 @@ export function Modal({
       <ModalAddAnime
         isOpen={isModalAddAnimeOpen}
         onClose={handleCloseModalAddAnime}
+      />
+      <ModalAddEntries 
+        isOpen={isModalAddEntriesOpen}
+        onClose={handleCloseModalAddEntries}
       />
     </div>
   );
