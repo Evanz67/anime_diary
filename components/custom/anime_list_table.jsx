@@ -99,18 +99,21 @@ export function AnimeListTable({ columns, data, pageSize = 10 }) {
           <Table>
             <TableHeader>
               <TableRow className="text-lg">
-                <TableHead className="font-extrabold">Episode</TableHead>
-                <TableHead className="font-extrabold">Status</TableHead>
+                <TableHead className="font-extrabold">Anime</TableHead>
+                <TableHead className="font-extrabold"># of Episodes</TableHead>
+                <TableHead className="font-extrabold">Type</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
                 <TableCell>Episode 1</TableCell>
                 <TableCell>Watched</TableCell>
+                <TableCell>TV</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Episode 2</TableCell>
                 <TableCell>Not Watched</TableCell>
+                <TableCell>OVA</TableCell>
               </TableRow>                     
             </TableBody>
           </Table>
