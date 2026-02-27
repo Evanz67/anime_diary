@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
     return unsubscribe
   }, [])
 
-  const signup = (email, password) => {
+  const signUp = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password)
   }
 
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
-    signup,
+    signUp,
     login,
     logout
   }

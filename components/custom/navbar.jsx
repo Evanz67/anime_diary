@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import { SignUp } from "@/components/custom/authentication/signup";
 import { Login } from "@/components/custom/authentication/login";
 import { Home, Rows3, Trash, BookOpen } from "lucide-react";
+import { useAuth } from "@/backend/auth_provider";
+import { getUser } from "@/backend/firestore_database";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -16,6 +18,9 @@ const menuItems = [
 export function NavBar() {
   const [isModalSignUpOpen, setIsModalSignUpOpen] = useState(false)
   const [isModalLoginOpen, setIsModalLoginOpen] = useState(false)
+  const [firstName, setFirstName] = useState("")
+
+  const { user, logout } = useAuth()
 
   const handleModalSignUp = () => {
   setIsModalSignUpOpen(true)
@@ -32,6 +37,16 @@ export function NavBar() {
   const handleCloseModalLogin = () => {
     setIsModalLoginOpen(false)
   }
+
+  useEffect(() => {
+    if (user) {
+      getUser(user.uid).then((userData) => {
+        if (userData) {
+          setFirstName(userData.firstName)
+        }
+      })
+    }
+  }, [user])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -55,8 +70,17 @@ export function NavBar() {
         </nav>
         {/* Auth Buttons */}
         <div className="flex items-center gap-2 mr-8">
-          <Button variant="ghost" size="lg" onClick={handleModalLogin}>Login</Button>
-          <Button size="lg" className="text-white" onClick={handleModalSignUp}>Sign Up</Button>
+          { !user ? (
+            <div>
+              <Button variant="ghost" size="lg" onClick={handleModalLogin}>Login</Button>
+              <Button size="lg" className="text-white" onClick={handleModalSignUp}>Sign Up</Button>
+            </div>      
+          ): (
+            <div className="flex items-center gap-4">
+              <span className="text-lg font-bold">{firstName}</span>
+              <Button variant="secondary" size="lg" onClick={logout}>Logout</Button>
+            </div>      
+          )}         
         </div>
       </div>
       <SignUp isOpen={isModalSignUpOpen} onClose={handleCloseModalSignUp} />
