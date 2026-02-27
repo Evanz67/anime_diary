@@ -5,7 +5,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export function CardTemplate({children, title }) {
+export function CardDashboard({ children, title }) {
   return (
     <div>
       <Card size="sm" className="w-80 h-80">
