@@ -10,15 +10,31 @@ import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
+import { useState } from "react"
+import { addSeries } from "@/backend/firestore_database"
+import { useAuth } from "@/backend/auth_provider"
 
-export function ModalAddAnime({ isOpen, onClose }) {
+export function ModalAddAnime({ isOpen, onClose, newSeries }) {
   const { register, handleSubmit, reset } = useForm()
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(false)
 
-  const onSubmit = (data) => {
-    console.log(data)
-    alert(`Anime "${data.name}" added!`)
-    reset()
-    onClose()
+  const onSubmit = async (data) => {
+    if (user) {
+      try {
+        setLoading(true)
+        await addSeries(user, data)
+        newSeries(data.name)
+      } catch (error) {
+        alert("Error adding series: " + error.message)
+      } finally {
+        setLoading(false)
+        reset()
+        onClose()
+      }  
+    } else {
+      alert("Please login to add a series.")
+    }   
   }
 
   return (
@@ -29,10 +45,20 @@ export function ModalAddAnime({ isOpen, onClose }) {
         </DialogHeader>     
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
-            <Input {...register("name")} placeholder="Enter anime series name" />
+            <Input {...register("name")} placeholder="Enter anime series name" required />
           </Field>
           <div className="flex justify-center">
-            <Button type="submit" variant="secondary" size="lg">Add</Button>
+            <Button type="submit" variant="secondary" size="lg" disabled={loading}>
+              {loading ? (
+                <div>
+                  Adding series...
+                </div>
+              ): (
+                <div>
+                  Add
+                </div>
+              )}
+            </Button>
           </div>        
         </form>
       </DialogContent>

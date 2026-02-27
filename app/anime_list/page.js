@@ -17,7 +17,7 @@ export default function AnimeList() {
   ]
 
   const columns = [
-    { key: "anime", name: "Anime Series" },
+    { key: "name", name: "Anime Series" },
     { key: "entries", name: "# of Entries" },
   ]
 
@@ -25,9 +25,10 @@ export default function AnimeList() {
   const [isModalAddAnimeOpen, setIsModalAddAnimeOpen] = useState(false)
   const [isModalAddEntriesOpen, setIsModalAddEntriesOpen] = useState(false)
   const [animeName, setAnimeName] = useState("")
+  const [newSeries, setNewSeries] = useState("")
   
   const handleModalEntries = (row) => {
-    setAnimeName(row.anime)
+    setAnimeName(row.name)
     setIsModalEntriesOpen(true)
   }
 
@@ -49,6 +50,10 @@ export default function AnimeList() {
 
   const handleCloseModalAddEntries = () => {
     setIsModalAddEntriesOpen(false)
+  }
+
+  const handleNewSeries = (seriesName) => {
+    setNewSeries(seriesName)
   }
 
   return (
@@ -73,9 +78,9 @@ export default function AnimeList() {
       </div>  
       <AnimeListTable 
         columns={columns} 
-        data={data} 
         pageSize={5} 
         handleModalEntries={handleModalEntries}
+        newSeries={newSeries}
       />
       <Modal 
         isModalEntriesOpen={isModalEntriesOpen}
@@ -85,7 +90,8 @@ export default function AnimeList() {
         isModalAddEntriesOpen={isModalAddEntriesOpen}
         handleCloseModalAddEntries={handleCloseModalAddEntries}
         handleOpenModalAddEntries={handleModalAddEntries}
-        animeName={animeName}       
+        animeName={animeName} 
+        newSeries={handleNewSeries}      
       />
     </div>
   );

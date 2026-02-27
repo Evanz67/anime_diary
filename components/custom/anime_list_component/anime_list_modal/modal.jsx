@@ -19,7 +19,8 @@ export function Modal({
     isModalAddEntriesOpen,
     handleCloseModalAddEntries, 
     handleOpenModalAddEntries,
-    animeName 
+    animeName,
+    newSeries 
   }) 
 {
   return (
@@ -57,6 +58,7 @@ export function Modal({
       <ModalAddAnime
         isOpen={isModalAddAnimeOpen}
         onClose={handleCloseModalAddAnime}
+        newSeries={newSeries}
       />
       <ModalAddEntries 
         isOpen={isModalAddEntriesOpen}
