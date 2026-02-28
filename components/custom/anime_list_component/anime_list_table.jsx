@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -16,17 +16,25 @@ import {
   ChevronsLeft,
   ChevronsRight
 } from "lucide-react"
+import { getSeries } from "@/backend/firestore_database";
+import { useAuth } from "@/backend/auth_provider"
 
-export function AnimeListTable({ columns, data, pageSize, handleModalEntries }) {
+export function AnimeListTable({ handleModalEntries, newSeries }) {
+  const columns = [
+    { key: "name", name: "Anime Series" },
+    { key: "entries", name: "# of Entries" },
+  ]
+  const { user } = useAuth()
   const [pagination, setPagination] = useState({
     pageIndex: 0, 
-    pageSize: pageSize,
+    pageSize: 5,
   })
+  const [series, setSeries] = useState([])
 
-  const totalPages = Math.ceil(data.length / pagination.pageSize)
+  const totalPages = Math.ceil(series.length / pagination.pageSize)
   const startIndex = pagination.pageIndex * pagination.pageSize
   const endIndex = startIndex + pagination.pageSize
-  const paginatedData = data.slice(startIndex, endIndex)
+  const paginatedData = series.slice(startIndex, endIndex)
 
   const goToFirstPage = () => {
     setPagination(prev => ({ ...prev, pageIndex: 0 }))
@@ -49,6 +57,19 @@ export function AnimeListTable({ columns, data, pageSize, handleModalEntries }) 
       pageIndex: totalPages - 1 
     }))
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getSeries(user)
+      setSeries(data)
+    }
+
+    fetchData()
+  }, [user])
+
+  useEffect(() => {
+    setSeries(prev => [...prev, { name: newSeries }])
+  }, [newSeries])
 
   return (
     <div className="space-y-4">
@@ -91,7 +112,7 @@ export function AnimeListTable({ columns, data, pageSize, handleModalEntries }) 
       {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of {data.length}
+          Showing {startIndex + 1}-{Math.min(endIndex, series.length)} of {series.length}
         </div>
         <div className="flex items-center space-x-2">
           <Button
