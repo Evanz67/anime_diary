@@ -14,7 +14,7 @@ import { useState } from "react"
 import { addSeries } from "@/backend/firestore_database"
 import { useAuth } from "@/backend/auth_provider"
 
-export function ModalAddAnime({ isOpen, onClose, newSeries }) {
+export function ModalAddAnime({ isOpen, onClose, handleNewSeries }) {
   const { register, handleSubmit, reset } = useForm()
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
@@ -24,7 +24,7 @@ export function ModalAddAnime({ isOpen, onClose, newSeries }) {
       try {
         setLoading(true)
         await addSeries(user, data)
-        newSeries(data.name)
+        handleNewSeries(data.name)
       } catch (error) {
         alert("Error adding series: " + error.message)
       } finally {

@@ -62,21 +62,26 @@ export const getSeries = async (user) => {
   }
 } 
 
-export const addEntry = async (entryData) => {
+export const addEntry = async (user, series, entry) => {
   try {
-    const docRef = await addDoc(collection(db, "entries"), entryData)
+    const docRef = await addDoc(collection(db, "anime", user.uid, "series", series, "entries"), entry)
     return docRef.id
   } catch (error) {
     console.error("Error adding document: ", error)
   }
 }
 
-export const getEntries = async (uid) => {
+export const getEntries = async (user, series) => {
   try {
-    const entriesRef = collection(db, "entries")
-    const q = query(entriesRef, where("uid", "==", uid))
-    const querySnapshot = await getDocs(q)
-    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    const entriesRef = collection(db, "anime", user.uid, "series", series, "entries")
+    const entriesData = await getDocs(entriesRef)
+    if (entriesData.docs.length === 0) {
+      return []
+    }
+    return entriesData.docs.map(doc => 
+      ({ 
+        ...doc.data() 
+      }))
   } catch (error) {
     console.error("Error getting documents: ", error)
   }

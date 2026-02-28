@@ -10,15 +10,31 @@ import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
+import { useAuth } from "@/backend/auth_provider"
+import { addEntry } from "@/backend/firestore_database"
+import { useState } from "react"
 
-export function ModalAddEntries({ isOpen, onClose }) {
+export function ModalAddEntries({ isOpen, onClose, animeName, handleNewEntry }) {
   const { register, handleSubmit, reset } = useForm()
+  const { user } = useAuth()
+  const [loading, setLoading] = useState(false)
 
-  const onSubmit = (data) => {
-    console.log(data)
-    alert(`Anime "${data.name}" added!`)
-    reset()
-    onClose()
+  const onSubmit = async (data) => {
+    if (user) {
+      try {
+        setLoading(true)
+        await addEntry(user, animeName, data)
+        handleNewEntry(data)
+      } catch (error) {
+        alert("Error adding entry: " + error.message)
+      } finally {
+        setLoading(false)
+        reset()
+        onClose()
+      }  
+    } else {
+      alert("Please login to add an entry.")
+    }
   }
 
   return (
@@ -41,7 +57,17 @@ export function ModalAddEntries({ isOpen, onClose }) {
             <Input {...register("type")} placeholder="Enter type (e.g. TV, OVA, Movie)" />
           </Field>
           <div className="flex justify-center">
-            <Button type="submit" variant="secondary" size="lg">Add</Button>
+            <Button type="submit" variant="secondary" size="lg" disabled={loading}>
+              {loading ? (
+                <div>
+                  Adding entry...
+                </div>
+              ): (
+                <div>
+                  Add
+                </div>
+              )}
+            </Button>
           </div>        
         </form>
       </DialogContent>

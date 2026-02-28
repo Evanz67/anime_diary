@@ -7,25 +7,14 @@ import { Modal } from "@/components/custom/anime_list_component/anime_list_modal
 
 export default function AnimeList() {
 
-  const data = [
-    { id: 1, anime: "Naruto", entries: Math.max(50,100)},
-    { id: 2, anime: "One Piece", entries: 70 },
-    { id: 3, anime: "Attack on Titan", entries: 30 },
-    { id: 4, anime: "My Hero Academia", entries: 40 },
-    { id: 5, anime: "Demon Slayer", entries: 25 },
-    { id: 6, anime: "Fullmetal Alchemist", entries: 60 },
-  ]
-
-  const columns = [
-    { key: "name", name: "Anime Series" },
-    { key: "entries", name: "# of Entries" },
-  ]
+  
 
   const [isModalEntriesOpen, setIsModalEntriesOpen] = useState(false)
   const [isModalAddAnimeOpen, setIsModalAddAnimeOpen] = useState(false)
   const [isModalAddEntriesOpen, setIsModalAddEntriesOpen] = useState(false)
   const [animeName, setAnimeName] = useState("")
   const [newSeries, setNewSeries] = useState("")
+  const [newEntry, setNewEntry] = useState({})
   
   const handleModalEntries = (row) => {
     setAnimeName(row.name)
@@ -56,6 +45,10 @@ export default function AnimeList() {
     setNewSeries(seriesName)
   }
 
+  const handleNewEntry = (entryName) => {
+    setNewEntry(entryName)
+  }
+
   return (
     <div className="container mx-auto flex-1 p-4">
       <div className="flex justify-between mb-4">
@@ -77,8 +70,6 @@ export default function AnimeList() {
         </div>    
       </div>  
       <AnimeListTable 
-        columns={columns} 
-        pageSize={5} 
         handleModalEntries={handleModalEntries}
         newSeries={newSeries}
       />
@@ -91,7 +82,9 @@ export default function AnimeList() {
         handleCloseModalAddEntries={handleCloseModalAddEntries}
         handleOpenModalAddEntries={handleModalAddEntries}
         animeName={animeName} 
-        newSeries={handleNewSeries}      
+        handleNewSeries={handleNewSeries}  
+        handleNewEntry={handleNewEntry}
+        newEntry={newEntry}    
       />
     </div>
   );

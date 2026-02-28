@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -19,11 +19,15 @@ import {
 import { getSeries } from "@/backend/firestore_database";
 import { useAuth } from "@/backend/auth_provider"
 
-export function AnimeListTable({ columns, pageSize, handleModalEntries, newSeries }) {
+export function AnimeListTable({ handleModalEntries, newSeries }) {
+  const columns = [
+    { key: "name", name: "Anime Series" },
+    { key: "entries", name: "# of Entries" },
+  ]
   const { user } = useAuth()
   const [pagination, setPagination] = useState({
     pageIndex: 0, 
-    pageSize: pageSize,
+    pageSize: 5,
   })
   const [series, setSeries] = useState([])
 
