@@ -84,27 +84,19 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((row, index) => (
-                <TableRow 
-                  key={row.id || `row-${index}-${row.name || 'unknown'}`}
-                  onClick={() => handleModalEntries(row)}
-                  className="cursor-pointer"
-                >
-                  {columns.map((column) => (
-                    <TableCell key={column.key}>
-                      {row[column.key]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
-                  No results found.
-                </TableCell>
+            {paginatedData.map((row) => (
+              <TableRow 
+                key={row.id}
+                onClick={() => handleModalEntries(row)}
+                className="cursor-pointer"
+              >
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {row[column.key]}
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
+            ))}           
           </TableBody>
         </Table>
       </div>

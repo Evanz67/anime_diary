@@ -23,8 +23,8 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
     if (user) {
       try {
         setLoading(true)
-        const entryID = await addEntry(user, seriesId, data)
-        handleNewEntry({id: entryID, ...data})
+        const entryId = await addEntry(user, seriesId, data)
+        handleNewEntry({id: entryId, ...data})
       } catch (error) {
         alert("Error adding entry: " + error.message)
       } finally {
