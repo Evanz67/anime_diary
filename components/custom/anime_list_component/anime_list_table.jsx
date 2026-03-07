@@ -68,7 +68,7 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
   }, [user])
 
   useEffect(() => {
-    setSeries(prev => [...prev, { name: newSeries }])
+    setSeries(prev => [...prev, { ...newSeries }])
   }, [newSeries])
 
   return (
@@ -85,9 +85,9 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
           </TableHeader>
           <TableBody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((row, rowIndex) => (
+              paginatedData.map((row, index) => (
                 <TableRow 
-                  key={rowIndex}
+                  key={row.id || `row-${index}-${row.name || 'unknown'}`}
                   onClick={() => handleModalEntries(row)}
                   className="cursor-pointer"
                 >

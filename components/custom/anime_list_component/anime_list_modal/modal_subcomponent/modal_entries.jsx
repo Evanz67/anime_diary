@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { FilePlusCorner, Trash2 } from 'lucide-react';
 
-export function ModalEntries({ isOpen, onClose, animeName, handleOpenModalAddEntries, newEntry }) {
+export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenModalAddEntries, newEntry }) {
   const columns = [
     { key: "name", name: "Anime" },
     { key: "episode", name: "# of Episode" },
@@ -33,7 +33,7 @@ export function ModalEntries({ isOpen, onClose, animeName, handleOpenModalAddEnt
 
   useEffect(() => {
       const fetchData = async () => {
-        const data = await getEntries(user, animeName)
+        const data = await getEntries(user, seriesId)
         setEntries(data)
       }
       if (isOpen === true) {
@@ -87,8 +87,8 @@ export function ModalEntries({ isOpen, onClose, animeName, handleOpenModalAddEnt
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {entries.map((row, rowIndex) => (
-                  <TableRow key={rowIndex}>
+                {entries.map((row) => (
+                  <TableRow key={row.id}>
                     {columns.map((column) => (
                       <TableCell key={column.key}>
                         {row[column.key]}

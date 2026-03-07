@@ -13,11 +13,13 @@ export default function AnimeList() {
   const [isModalAddAnimeOpen, setIsModalAddAnimeOpen] = useState(false)
   const [isModalAddEntriesOpen, setIsModalAddEntriesOpen] = useState(false)
   const [animeName, setAnimeName] = useState("")
-  const [newSeries, setNewSeries] = useState("")
+  const [seriesId, setSeriesId] = useState("")
+  const [newSeries, setNewSeries] = useState({})
   const [newEntry, setNewEntry] = useState({})
   
   const handleModalEntries = (row) => {
     setAnimeName(row.name)
+    setSeriesId(row.id)
     setIsModalEntriesOpen(true)
   }
 
@@ -82,6 +84,7 @@ export default function AnimeList() {
         handleCloseModalAddEntries={handleCloseModalAddEntries}
         handleOpenModalAddEntries={handleModalAddEntries}
         animeName={animeName} 
+        seriesId={seriesId}
         handleNewSeries={handleNewSeries}  
         handleNewEntry={handleNewEntry}
         newEntry={newEntry}    

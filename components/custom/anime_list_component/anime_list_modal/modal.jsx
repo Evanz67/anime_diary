@@ -11,6 +11,7 @@ export function Modal({
     handleCloseModalAddEntries, 
     handleOpenModalAddEntries,
     animeName,
+    seriesId,
     handleNewSeries,
     handleNewEntry,
     newEntry
@@ -23,6 +24,7 @@ export function Modal({
         onClose={handleCloseModalEntries}
         handleOpenModalAddEntries={handleOpenModalAddEntries}
         animeName={animeName}
+        seriesId={seriesId}
         newEntry={newEntry}
       >
       </ModalEntries>
@@ -34,7 +36,7 @@ export function Modal({
       <ModalAddEntries 
         isOpen={isModalAddEntriesOpen}
         onClose={handleCloseModalAddEntries}
-        animeName={animeName}
+        seriesId={seriesId}
         handleNewEntry={handleNewEntry}
       />
     </div>
