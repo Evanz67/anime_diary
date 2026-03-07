@@ -37,8 +37,7 @@ export const getUser = async (uid) => {
 
 export const addSeries = async (user, series) => {
   try {
-    const docRef = doc(db, "anime", user.uid, "series", series.name)
-    await setDoc(docRef, series)
+    const docRef = await addDoc(collection(db, "users", user.uid, "series"), series)
     return docRef.id
   } catch (error) {
     console.error("Error adding document: ", error)
@@ -48,10 +47,11 @@ export const addSeries = async (user, series) => {
 export const getSeries = async (user) => {
   if (user) {
     try {
-      const seriesRef = collection(db, "anime", user.uid, "series")
+      const seriesRef = collection(db, "users", user.uid, "series")
       const seriesData = await getDocs(seriesRef)
     return seriesData.docs.map(doc => 
       ({ 
+        id: doc.id,
         ...doc.data() 
       }))
     } catch (error) {
@@ -62,24 +62,25 @@ export const getSeries = async (user) => {
   }
 } 
 
-export const addEntry = async (user, series, entry) => {
+export const addEntry = async (user, seriesId, entry) => {
   try {
-    const docRef = await addDoc(collection(db, "anime", user.uid, "series", series, "entries"), entry)
+    const docRef = await addDoc(collection(db, "users", user.uid, "series", seriesId, "entries"), entry)
     return docRef.id
   } catch (error) {
     console.error("Error adding document: ", error)
   }
 }
 
-export const getEntries = async (user, series) => {
+export const getEntries = async (user, seriesId) => {
   try {
-    const entriesRef = collection(db, "anime", user.uid, "series", series, "entries")
+    const entriesRef = collection(db, "users", user.uid, "series", seriesId, "entries")
     const entriesData = await getDocs(entriesRef)
     if (entriesData.docs.length === 0) {
       return []
     }
     return entriesData.docs.map(doc => 
       ({ 
+        id: doc.id,
         ...doc.data() 
       }))
   } catch (error) {

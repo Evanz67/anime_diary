@@ -68,7 +68,7 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
   }, [user])
 
   useEffect(() => {
-    setSeries(prev => [...prev, { name: newSeries }])
+    setSeries(prev => [...prev, { ...newSeries }])
   }, [newSeries])
 
   return (
@@ -84,27 +84,19 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((row, rowIndex) => (
-                <TableRow 
-                  key={rowIndex}
-                  onClick={() => handleModalEntries(row)}
-                  className="cursor-pointer"
-                >
-                  {columns.map((column) => (
-                    <TableCell key={column.key}>
-                      {row[column.key]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
-                  No results found.
-                </TableCell>
+            {paginatedData.map((row) => (
+              <TableRow 
+                key={row.id}
+                onClick={() => handleModalEntries(row)}
+                className="cursor-pointer"
+              >
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {row[column.key]}
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
+            ))}           
           </TableBody>
         </Table>
       </div>

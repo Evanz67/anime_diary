@@ -14,7 +14,7 @@ import { useAuth } from "@/backend/auth_provider"
 import { addEntry } from "@/backend/firestore_database"
 import { useState } from "react"
 
-export function ModalAddEntries({ isOpen, onClose, animeName, handleNewEntry }) {
+export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
   const { register, handleSubmit, reset } = useForm()
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
@@ -23,8 +23,8 @@ export function ModalAddEntries({ isOpen, onClose, animeName, handleNewEntry }) 
     if (user) {
       try {
         setLoading(true)
-        await addEntry(user, animeName, data)
-        handleNewEntry(data)
+        const entryId = await addEntry(user, seriesId, data)
+        handleNewEntry({id: entryId, ...data})
       } catch (error) {
         alert("Error adding entry: " + error.message)
       } finally {
