@@ -62,6 +62,10 @@ export const getSeries = async (user) => {
   }
 } 
 
+export const updateSeries = async (seriesRef) => {
+  
+}
+
 export const addEntry = async (user, seriesId, entry) => {
   try {
     const docRef = await addDoc(collection(db, "users", user.uid, "series", seriesId, "entries"), entry)
@@ -95,7 +99,5 @@ export const getEntries = async (user, seriesId) => {
   }
 }
 
-export const updateEntryCountLocal = async (seriesRef) => {
 
-}
 

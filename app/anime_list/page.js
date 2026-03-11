@@ -70,7 +70,7 @@ export default function AnimeList() {
           variant="secondary"
           size="lg"    
           >
-            Remove Series
+            Edit Series
           </Button>
         </div>    
       </div>  
