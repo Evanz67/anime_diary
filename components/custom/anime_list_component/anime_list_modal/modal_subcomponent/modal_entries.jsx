@@ -51,7 +51,6 @@ export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenM
     } 
   }, [user, isOpen])
   
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">     

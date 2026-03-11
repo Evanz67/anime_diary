@@ -18,8 +18,9 @@ import {
 } from "lucide-react"
 import { getSeries } from "@/backend/firestore_database";
 import { useAuth } from "@/backend/auth_provider"
+import { set } from "react-hook-form";
 
-export function AnimeListTable({ handleModalEntries, newSeries }) {
+export function AnimeListTable({ handleModalEntries, newSeries, seriesRef }) {
   const columns = [
     { key: "name", name: "Anime Series" },
     { key: "entries", name: "# of Entries" },
@@ -30,6 +31,7 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
     pageSize: 5,
   })
   const [series, setSeries] = useState([])
+  const [loading, setLoading] = useState(true)
 
   const totalPages = Math.ceil(series.length / pagination.pageSize)
   const startIndex = pagination.pageIndex * pagination.pageSize
@@ -60,16 +62,43 @@ export function AnimeListTable({ handleModalEntries, newSeries }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       const data = await getSeries(user)
       setSeries(data)
+      setLoading(false)
     }
 
     fetchData()
   }, [user])
 
   useEffect(() => {
+    setLoading(true)
     setSeries(prev => [...prev, { ...newSeries }])
+    setLoading(false)
   }, [newSeries])
+
+  useEffect(() => {
+    const updateEntryCount = () => {
+      setLoading(true)
+      if (series.some(series => series.id === seriesRef.id)) {
+        const seriesData = series.find(series => series.id === seriesRef.id)
+        const newSeriesData = {...seriesData, entries: seriesRef.entries}
+        const updatedSeries = series.filter(series => series.id !== seriesRef.id)
+        setSeries([...updatedSeries, newSeriesData])
+      }
+      setLoading(false)
+    }
+
+    updateEntryCount()
+  }, [seriesRef])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <span className="text-lg italic text-muted-foreground">Loading...</span>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">

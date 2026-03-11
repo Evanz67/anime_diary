@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimeListTable } from "@/components/custom/anime_list_component/anime_list_table";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/custom/anime_list_component/anime_list_modal/modal";
+import { set } from "react-hook-form";
 
 export default function AnimeList() {
 
@@ -16,6 +17,7 @@ export default function AnimeList() {
   const [seriesId, setSeriesId] = useState("")
   const [newSeries, setNewSeries] = useState({})
   const [newEntry, setNewEntry] = useState({})
+  const [seriesRef, setSeriesRef] = useState({})
   
   const handleModalEntries = (row) => {
     setAnimeName(row.name)
@@ -47,8 +49,9 @@ export default function AnimeList() {
     setNewSeries(seriesName)
   }
 
-  const handleNewEntry = (entryName) => {
+  const handleNewEntry = (entryName, seriesRef) => {
     setNewEntry(entryName)
+    setSeriesRef(seriesRef)
   }
 
   return (
@@ -67,13 +70,14 @@ export default function AnimeList() {
           variant="secondary"
           size="lg"    
           >
-            Remove Series
+            Edit Series
           </Button>
         </div>    
       </div>  
       <AnimeListTable 
         handleModalEntries={handleModalEntries}
         newSeries={newSeries}
+        seriesRef={seriesRef}
       />
       <Modal 
         isModalEntriesOpen={isModalEntriesOpen}

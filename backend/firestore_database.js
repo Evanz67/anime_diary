@@ -37,7 +37,7 @@ export const getUser = async (uid) => {
 
 export const addSeries = async (user, series) => {
   try {
-    const docRef = await addDoc(collection(db, "users", user.uid, "series"), series)
+    const docRef = await addDoc(collection(db, "users", user.uid, "series"), { ...series, entries: 0 })
     return docRef.id
   } catch (error) {
     console.error("Error adding document: ", error)
@@ -62,10 +62,21 @@ export const getSeries = async (user) => {
   }
 } 
 
+export const updateSeries = async (seriesRef) => {
+  
+}
+
 export const addEntry = async (user, seriesId, entry) => {
   try {
     const docRef = await addDoc(collection(db, "users", user.uid, "series", seriesId, "entries"), entry)
-    return docRef.id
+    const entriesRef = collection(db, "users", user.uid, "series", seriesId, "entries")
+    const entriesData = await getDocs(entriesRef)
+    const seriesRef = doc(db, "users", user.uid, "series", seriesId)
+    await updateDoc(seriesRef, {
+      entries: entriesData.docs.length
+    })
+    const entryRef = [docRef.id, {id: seriesRef.id, entries: entriesData.docs.length}]
+    return entryRef
   } catch (error) {
     console.error("Error adding document: ", error)
   }
@@ -87,4 +98,6 @@ export const getEntries = async (user, seriesId) => {
     console.error("Error getting documents: ", error)
   }
 }
+
+
 
