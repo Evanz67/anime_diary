@@ -109,7 +109,6 @@ export function AnimeListTable({ handleModalEntries, newSeries, deletedSeriesId,
   useEffect(() => {
     const deleteSeries = () => {
       setLoading(true)
-      alert(deletedSeriesId)
       if (series.some(series => series.id === deletedSeriesId)) {
         const updatedSeries = series.filter(series => series.id !== deletedSeriesId)
         setSeries(updatedSeries)

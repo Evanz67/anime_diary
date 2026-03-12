@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import { useAuth } from "@/backend/auth_provider"
-import { addEntry } from "@/backend/firestore_database"
+import { updateEntries } from "@/backend/firestore_database"
 import { useState, useEffect } from "react"
 
-export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
+export function ModalUpdateEntries({ isOpen, onClose, seriesId, entryId, handleUpdateEntry }) {
   const { register, handleSubmit, reset } = useForm()
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
@@ -27,10 +27,10 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
     const newData = { ...data, episode: parseInt(data.episode) }
     try {
       setLoading(true)
-      const entryRef = await addEntry(user, seriesId, newData)
-      handleNewEntry({id: entryRef[0], ...newData}, entryRef[1])
+      await updateEntries(user, seriesId, entryId, newData)
+      handleUpdateEntry(entryId, newData)
     } catch (error) {
-      alert("Error adding entry: " + error.message)
+      alert("Error updating entry: " + error.message)
     } finally {
       setLoading(false)
       reset()
@@ -39,21 +39,21 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
   }
 
   useEffect(() => {
-    if (isOpen === false) {
-      reset()
-    }
-  }, [isOpen])
+      if (isOpen === false) {
+        reset()
+      }
+    }, [isOpen])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Add Anime Entry</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Edit Anime Entry</DialogTitle>
         </DialogHeader>     
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
-            <Input {...register("name")} placeholder="Enter an entry name" required />
+            <Input {...register("name")} placeholder="Enter an entry name" />
           </Field>
           <Field>
             <FieldLabel className="italic"># of Episode</FieldLabel>
@@ -69,17 +69,17 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
           </Field>
           <Field>
             <FieldLabel className="italic">Type</FieldLabel>
-            <Input {...register("type")} placeholder="Enter type (e.g. TV, OVA, ONA, Movie)" required />
+            <Input {...register("type")} placeholder="Enter type (e.g. TV, OVA, ONA, Movie)" />
           </Field>
           <div className="flex justify-center">
             <Button type="submit" variant="secondary" size="lg" disabled={loading}>
               {loading ? (
                 <div>
-                  Adding entry...
+                  Updating entry...
                 </div>
               ): (
                 <div>
-                  Add
+                  Edit
                 </div>
               )}
             </Button>

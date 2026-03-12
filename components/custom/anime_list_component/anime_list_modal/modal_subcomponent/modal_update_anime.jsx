@@ -9,7 +9,7 @@ import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { updateSeries } from "@/backend/firestore_database"
 import { useAuth } from "@/backend/auth_provider"
 
@@ -31,6 +31,13 @@ export function ModalUpdateAnime({ isOpen, onClose, seriesId, handleUpdateAnime 
       onClose()
     }  
   }
+
+  useEffect(() => {
+      if (isOpen === false) {
+        reset()
+      }
+    }, [isOpen])
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
