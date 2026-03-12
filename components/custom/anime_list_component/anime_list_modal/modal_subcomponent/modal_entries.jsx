@@ -20,9 +20,9 @@ import { getEntries } from "@/backend/firestore_database";
 import { useAuth } from "@/backend/auth_provider";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { FilePlusCorner, Trash2 } from 'lucide-react';
+import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
-export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenModalAddEntries, newEntry }) {
+export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenModalAddEntries, handleModalUpdateAnime, newEntry }) {
   const columns = [
     { key: "name", name: "Anime" },
     { key: "episode", name: "# of Episode" },
@@ -55,7 +55,16 @@ export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenM
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">     
         <DialogHeader>
-          <DialogTitle className="text-xl italic">{animeName}</DialogTitle>
+          <DialogTitle className="text-xl italic">
+            <span className="mr-2">{animeName}</span>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleModalUpdateAnime}
+            >
+              <TextCursorInput /> 
+            </Button>            
+          </DialogTitle>
           <DialogDescription>28 Entries</DialogDescription>
         </DialogHeader>
         <div className="flex gap-3">

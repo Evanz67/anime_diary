@@ -62,8 +62,25 @@ export const getSeries = async (user) => {
   }
 } 
 
-export const updateSeries = async (seriesRef) => {
-  
+export const updateSeries = async (user, seriesId, seriesNewName) => {
+  try {
+    const seriesRef = doc(db, "users", user.uid, "series", seriesId)
+    await updateDoc(seriesRef, {
+      name: seriesNewName
+    })
+  } catch (error) {
+    console.error("Error updating document: ", error)
+  }
+}
+
+export const deleteSeries = async (user, seriesId) => {
+  try {
+    const seriesRef = doc(db, "users", user.uid, "series", seriesId)
+    await deleteDoc(seriesRef)
+    return seriesId
+  } catch (error) {
+    console.error("Error deleting document: ", error)
+  }
 }
 
 export const addEntry = async (user, seriesId, entry) => {
