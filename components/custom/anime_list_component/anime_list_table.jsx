@@ -18,9 +18,8 @@ import {
 } from "lucide-react"
 import { getSeries } from "@/backend/firestore_database";
 import { useAuth } from "@/backend/auth_provider"
-import { set } from "react-hook-form";
 
-export function AnimeListTable({ handleModalEntries, newSeries, seriesRef }) {
+export function AnimeListTable({ handleModalEntries, newSeries, deletedSeriesId, seriesRef, seriesUpdate }) {
   const columns = [
     { key: "name", name: "Anime Series" },
     { key: "entries", name: "# of Entries" },
@@ -78,6 +77,21 @@ export function AnimeListTable({ handleModalEntries, newSeries, seriesRef }) {
   }, [newSeries])
 
   useEffect(() => {
+    const updateAnimeSeries = () => {
+      setLoading(true)
+      if (series.some(series => series.id === seriesUpdate.id)) {
+        const seriesData = series.find(series => series.id === seriesUpdate.id)
+        const newSeriesData = {...seriesData, name: seriesUpdate.name}
+        const updatedSeries = series.filter(series => series.id !== seriesUpdate.id)
+        setSeries([...updatedSeries, newSeriesData])
+      }
+      setLoading(false)
+    }
+
+    updateAnimeSeries()
+  }, [seriesUpdate])
+
+  useEffect(() => {
     const updateEntryCount = () => {
       setLoading(true)
       if (series.some(series => series.id === seriesRef.id)) {
@@ -91,6 +105,20 @@ export function AnimeListTable({ handleModalEntries, newSeries, seriesRef }) {
 
     updateEntryCount()
   }, [seriesRef])
+
+  useEffect(() => {
+    const deleteSeries = () => {
+      setLoading(true)
+      alert(deletedSeriesId)
+      if (series.some(series => series.id === deletedSeriesId)) {
+        const updatedSeries = series.filter(series => series.id !== deletedSeriesId)
+        setSeries(updatedSeries)
+      }
+      setLoading(false)
+    }
+
+    deleteSeries()
+  }, [deletedSeriesId])
 
   if (loading) {
     return (

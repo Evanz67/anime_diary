@@ -1,6 +1,8 @@
 import { ModalEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_entries"
 import { ModalAddAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_anime"
 import { ModalAddEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_entries"
+import { ModalUpdateAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_update_anime"
+import { ConfirmationPopup } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/confirmation_popup"
 
 export function Modal({ 
     isModalEntriesOpen, 
@@ -10,11 +12,20 @@ export function Modal({
     isModalAddEntriesOpen,
     handleCloseModalAddEntries, 
     handleOpenModalAddEntries,
+    isModalUpdateAnimeOpen,
+    handleModalUpdateAnime,
+    handleCloseModalUpdateAnime,
+    confirmationOpen,
+    handleCloseConfirmation,
+    confirmationLoading,
+    handleConfirmDeleteSeries,
     animeName,
+    confirmationName,
     seriesId,
     handleNewSeries,
     handleNewEntry,
-    newEntry
+    newEntry,
+    handleUpdateAnime
   }) 
 {
   return (
@@ -23,6 +34,7 @@ export function Modal({
         isOpen={isModalEntriesOpen}
         onClose={handleCloseModalEntries}
         handleOpenModalAddEntries={handleOpenModalAddEntries}
+        handleModalUpdateAnime={handleModalUpdateAnime}
         animeName={animeName}
         seriesId={seriesId}
         newEntry={newEntry}
@@ -38,6 +50,19 @@ export function Modal({
         onClose={handleCloseModalAddEntries}
         seriesId={seriesId}
         handleNewEntry={handleNewEntry}
+      />
+      <ModalUpdateAnime
+        isOpen={isModalUpdateAnimeOpen}
+        onClose={handleCloseModalUpdateAnime}
+        seriesId={seriesId}  
+        handleUpdateAnime={handleUpdateAnime}
+      />
+      <ConfirmationPopup
+        isOpen={confirmationOpen}
+        onClose={handleCloseConfirmation}
+        name={confirmationName}
+        confirmDelete={handleConfirmDeleteSeries}
+        loading={confirmationLoading}
       />
     </div>
   );
