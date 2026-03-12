@@ -20,9 +20,20 @@ import { getEntries } from "@/backend/firestore_database";
 import { useAuth } from "@/backend/auth_provider";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
+import { FilePlusCorner, Trash2, TextCursorInput, SquarePen } from 'lucide-react';
 
-export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenModalAddEntries, handleModalUpdateAnime, newEntry }) {
+export function ModalEntries({ 
+    isOpen,
+    onClose,   
+    handleOpenModalAddEntries,
+    handleModalUpdateAnime,
+    handleModalUpdateEntries,
+    animeName,
+    seriesId,
+    newEntry,
+    entryUpdate
+  }) 
+{
   const columns = [
     { key: "name", name: "Anime" },
     { key: "episode", name: "# of Episode" },
@@ -30,11 +41,14 @@ export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenM
   ]
   const { user } = useAuth() 
   const [entries, setEntries] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
       const fetchData = async () => {
+        setLoading(true)
         const data = await getEntries(user, seriesId)
         setEntries(data)
+        setLoading(false)
       }
       if (isOpen === true) {
         fetchData()
@@ -42,7 +56,9 @@ export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenM
     }, [user, isOpen])
   
   useEffect(() => {
+    setLoading(true)
     setEntries(prev => [...prev, newEntry])
+    setLoading(false)
   }, [newEntry])
 
   useEffect(() => {
@@ -50,6 +66,21 @@ export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenM
       setEntries([])
     } 
   }, [user, isOpen])
+
+  useEffect(() => {
+    const updateEntryData = () => {
+      setLoading(true)
+      if (entries.some(entry => entry.id === entryUpdate.id)) {
+        const entryData = entries.find(entry => entry.id === entryUpdate.id)
+        const newEntryData = {...entryData, ...entryUpdate}
+        const updatedEntries = entries.filter(entry => entry.id !== entryUpdate.id)
+        setEntries([...updatedEntries, newEntryData])
+      }
+      setLoading(false)
+    }
+
+    updateEntryData()
+  }, [entryUpdate])
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -83,29 +114,40 @@ export function ModalEntries({ isOpen, onClose, animeName, seriesId, handleOpenM
           </Button>
         </div>
         <div className="mt-1 max-h-[60vh] min-h-[30vh] overflow-x-auto">
-          <ModalCardEntries >     
-            <Table>
-              <TableHeader>
-                <TableRow className="text-lg">
-                  {columns.map((column) => (
-                    <TableHead key={column.key} className="font-extrabold">
-                      {column.name}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {entries.map((row) => (
-                  <TableRow key={row.id}>
+          <ModalCardEntries >
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <span className="text-lg italic text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="text-lg">
                     {columns.map((column) => (
-                      <TableCell key={column.key}>
-                        {row[column.key]}
-                      </TableCell>
+                      <TableHead key={column.key} className="font-extrabold">
+                        {column.name}
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))}                    
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {entries.map((row) => (
+                    <TableRow 
+                      key={row.id}
+                      onClick={() => handleModalUpdateEntries(row)}
+                      className="cursor-pointer"
+                    >
+                      {columns.map((column) => (
+                        <TableCell key={column.key}>
+                          {row[column.key]}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}                    
+                </TableBody>
+              </Table>
+            )}     
+            
           </ModalCardEntries>
         </div>
       </DialogContent>

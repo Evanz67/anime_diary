@@ -76,6 +76,9 @@ export const updateSeries = async (user, seriesId, seriesNewName) => {
 export const deleteSeries = async (user, seriesId) => {
   try {
     const seriesRef = doc(db, "users", user.uid, "series", seriesId)
+    const entriesRef = collection(seriesRef, "entries")
+    const entriesSnapshot = await getDocs(entriesRef)
+    await Promise.all(entriesSnapshot.docs.map(entry => deleteDoc(entry.ref)))
     await deleteDoc(seriesRef)
     return seriesId
   } catch (error) {
@@ -113,6 +116,22 @@ export const getEntries = async (user, seriesId) => {
       }))
   } catch (error) {
     console.error("Error getting documents: ", error)
+  }
+}
+
+export const updateEntries = async (user, seriesId, entryId, entryNewData) => {
+  const dataKey = ["name", "episode", "type"]
+  try {
+    const entriesRef = doc(db, "users", user.uid, "series", seriesId, "entries", entryId)
+    const updatedData = {}
+    dataKey.forEach(key => {
+      if (entryNewData[key] !== "" && entryNewData[key] !== undefined && entryNewData[key] !== null) {
+        updatedData[key] = entryNewData[key]
+      }
+    })
+    await updateDoc(entriesRef, updatedData)
+  } catch (error) {
+    console.error("Error updating document: ", error)
   }
 }
 

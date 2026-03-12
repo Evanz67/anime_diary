@@ -10,7 +10,7 @@ import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { addSeries } from "@/backend/firestore_database"
 import { useAuth } from "@/backend/auth_provider"
 
@@ -36,6 +36,12 @@ export function ModalAddAnime({ isOpen, onClose, handleNewSeries }) {
       alert("Please login to add a series.")
     }   
   }
+
+  useEffect(() => {
+      if (isOpen === false) {
+        reset()
+      }
+    }, [isOpen])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
