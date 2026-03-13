@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono, Inter } from "next/font/google";
-import { NavBar } from "@/components/custom/navbar"; 
+import { NavBar } from "@/components/custom/navbar";
 import { AuthProvider } from "@/backend/auth_provider";
 import "./globals.css";
 
@@ -8,7 +8,7 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -17,7 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Anime Diary",
-  description: "List your anime series and entries in one place. Keep track of your anime watching journey with Anime Diary.",
+  description:
+    "List your anime series and entries in one place. Keep track of your anime watching journey with Anime Diary.",
 };
 
 export default function RootLayout({ children }) {
@@ -30,7 +31,7 @@ export default function RootLayout({ children }) {
           <div className="min-h-screen flex flex-col">
             <NavBar />
             <main className="container mx-auto flex-1 p-4 flex flex-col">
-                {children}         
+              {children}
             </main>
           </div>
         </AuthProvider>
