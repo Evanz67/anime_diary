@@ -1,86 +1,97 @@
-"use client"
+"use client";
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useForm } from "react-hook-form"
-import { useAuth } from "@/backend/auth_provider"
-import { useState } from "react"
-import { addUser } from "@/backend/firestore_database"
+} from "@/components/ui/dialog";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { useAuth } from "@/backend/auth_provider";
+import { useState } from "react";
+import { addUser } from "@/backend/firestore_database";
 
 export function SignUp({ isOpen, onClose }) {
-  const { register, handleSubmit, reset } = useForm()
-  const { signUp, user } = useAuth()
-  const [loading, setLoading] = useState(false)
+  const { register, handleSubmit, reset } = useForm();
+  const { signUp, user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
     try {
-      setLoading(true)
-      const userInfo = await signUp(data.email, data.password)
-      const user = userInfo.user
+      setLoading(true);
+      const userInfo = await signUp(data.email, data.password);
+      const user = userInfo.user;
       await addUser({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
-        uid: user.uid
-      })
-      alert(`User "${data.email}" signed up successfully!`)
+        uid: user.uid,
+      });
+      alert(`User "${data.email}" signed up successfully!`);
     } catch (error) {
-      alert("Error signing up user: " + error.message)
+      alert("Error signing up user: " + error.message);
     } finally {
-      setLoading(false)
-      reset()
-      onClose()
+      setLoading(false);
+      reset();
+      onClose();
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-sm lg:max-w-md ">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">Sign Up</DialogTitle>
-        </DialogHeader>     
+          <DialogTitle className="text-xl font-bold text-center">
+            Sign Up
+          </DialogTitle>
+        </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <FieldLabel className="italic">First Name</FieldLabel>
-            <Input {...register("firstName")} placeholder="Enter first name" required />
+            <Input
+              {...register("firstName")}
+              placeholder="Enter first name"
+              required
+            />
           </Field>
           <Field>
             <FieldLabel className="italic">Last Name</FieldLabel>
-            <Input {...register("lastName")} placeholder="Enter last name" required />
+            <Input
+              {...register("lastName")}
+              placeholder="Enter last name"
+              required
+            />
           </Field>
           <Field>
             <FieldLabel className="italic">Email</FieldLabel>
-            <Input {...register("email")} placeholder="Enter email address"  required />
+            <Input
+              {...register("email")}
+              placeholder="Enter email address"
+              required
+            />
           </Field>
           <Field>
             <FieldLabel className="italic">Password</FieldLabel>
-            <Input 
-              {...register("password")} 
+            <Input
+              {...register("password")}
               placeholder="Enter password"
               type="password"
-              required 
+              required
             />
           </Field>
           <div className="flex justify-center">
-            <Button type="submit" variant="secondary" size="lg" disabled={loading}>
-              {loading ? (
-                <div>
-                  Signing Up...
-                </div>
-              ): (
-                <div>
-                  Sign Up
-                </div>
-              )}
+            <Button
+              type="submit"
+              variant="secondary"
+              size="lg"
+              disabled={loading}
+            >
+              {loading ? <div>Signing Up...</div> : <div>Sign Up</div>}
             </Button>
-          </div>        
+          </div>
         </form>
       </DialogContent>
     </Dialog>

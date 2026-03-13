@@ -1,40 +1,43 @@
-import { ModalEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_entries"
-import { ModalAddAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_anime"
-import { ModalAddEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_entries"
-import { ModalUpdateEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_update_entries"
-import { ModalUpdateAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_update_anime"
-import { ConfirmationPopup } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/confirmation_popup"
+import { ModalEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_entries";
+import { ModalAddAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_anime";
+import { ModalAddEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_add_entries";
+import { ModalUpdateEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_update_entries";
+import { ModalUpdateAnime } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_update_anime";
+import { ConfirmationPopup } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/confirmation_popup";
 
-export function Modal({ 
-    isModalEntriesOpen, 
-    handleCloseModalEntries, 
-    isModalAddAnimeOpen, 
-    handleCloseModalAddAnime,
-    isModalAddEntriesOpen,
-    handleCloseModalAddEntries, 
-    handleOpenModalAddEntries,
-    isModalUpdateAnimeOpen,
-    handleModalUpdateAnime,
-    handleCloseModalUpdateAnime,
-    isModalUpdateEntriesOpen,
-    handleModalUpdateEntries,
-    handleCloseUpdateEntries,
-    confirmationOpen,
-    handleCloseConfirmation,
-    confirmationLoading,
-    handleConfirmDeleteSeries,
-    animeName,
-    confirmationName,
-    seriesId,
-    entryId,
-    handleNewSeries,
-    handleNewEntry,
-    newEntry,
-    handleUpdateAnime,
-    handleUpdateEntry,
-    entryUpdate
-  }) 
-{
+export function Modal({
+  isModalEntriesOpen,
+  handleCloseModalEntries,
+  isModalAddAnimeOpen,
+  handleCloseModalAddAnime,
+  isModalAddEntriesOpen,
+  handleCloseModalAddEntries,
+  handleOpenModalAddEntries,
+  isModalUpdateAnimeOpen,
+  handleModalUpdateAnime,
+  handleCloseModalUpdateAnime,
+  isModalUpdateEntriesOpen,
+  handleModalEntriesDetails,
+  handleCloseUpdateEntries,
+  confirmationOpen,
+  handleCloseConfirmation,
+  confirmationLoading,
+  handleConfirmDelete,
+  animeName,
+  confirmationName,
+  seriesId,
+  entryId,
+  handleNewSeries,
+  handleNewEntry,
+  newEntry,
+  handleUpdateAnime,
+  handleUpdateEntry,
+  entryUpdate,
+  handleDeleteEntries,
+  handleCancelDeleteEntries,
+  deleteEntriesState,
+  deletedEntriesId,
+}) {
   return (
     <div>
       <ModalEntries
@@ -42,19 +45,22 @@ export function Modal({
         onClose={handleCloseModalEntries}
         handleOpenModalAddEntries={handleOpenModalAddEntries}
         handleModalUpdateAnime={handleModalUpdateAnime}
-        handleModalUpdateEntries={handleModalUpdateEntries}
+        handleModalEntriesDetails={handleModalEntriesDetails}
+        handleDeleteEntries={handleDeleteEntries}
+        handleCancelDeleteEntries={handleCancelDeleteEntries}
+        deleteEntriesState={deleteEntriesState}
         animeName={animeName}
         seriesId={seriesId}
         newEntry={newEntry}
         entryUpdate={entryUpdate}
-      >
-      </ModalEntries>
+        deletedEntriesId={deletedEntriesId}
+      ></ModalEntries>
       <ModalAddAnime
         isOpen={isModalAddAnimeOpen}
         onClose={handleCloseModalAddAnime}
         handleNewSeries={handleNewSeries}
       />
-      <ModalAddEntries 
+      <ModalAddEntries
         isOpen={isModalAddEntriesOpen}
         onClose={handleCloseModalAddEntries}
         seriesId={seriesId}
@@ -63,10 +69,10 @@ export function Modal({
       <ModalUpdateAnime
         isOpen={isModalUpdateAnimeOpen}
         onClose={handleCloseModalUpdateAnime}
-        seriesId={seriesId}  
+        seriesId={seriesId}
         handleUpdateAnime={handleUpdateAnime}
       />
-      <ModalUpdateEntries 
+      <ModalUpdateEntries
         isOpen={isModalUpdateEntriesOpen}
         onClose={handleCloseUpdateEntries}
         seriesId={seriesId}
@@ -77,8 +83,9 @@ export function Modal({
         isOpen={confirmationOpen}
         onClose={handleCloseConfirmation}
         name={confirmationName}
-        confirmDelete={handleConfirmDeleteSeries}
+        confirmDelete={handleConfirmDelete}
         loading={confirmationLoading}
+        deleteEntriesState={deleteEntriesState}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
@@ -16,45 +16,49 @@ const menuItems = [
 ];
 
 export function NavBar() {
-  const [isModalSignUpOpen, setIsModalSignUpOpen] = useState(false)
-  const [isModalLoginOpen, setIsModalLoginOpen] = useState(false)
-  const [firstName, setFirstName] = useState("")
+  const [isModalSignUpOpen, setIsModalSignUpOpen] = useState(false);
+  const [isModalLoginOpen, setIsModalLoginOpen] = useState(false);
+  const [firstName, setFirstName] = useState("");
 
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuth();
 
   const handleModalSignUp = () => {
-  setIsModalSignUpOpen(true)
-  }
+    setIsModalSignUpOpen(true);
+  };
 
   const handleCloseModalSignUp = () => {
-    setIsModalSignUpOpen(false)
-  }
+    setIsModalSignUpOpen(false);
+  };
 
   const handleModalLogin = () => {
-  setIsModalLoginOpen(true)
-  }
+    setIsModalLoginOpen(true);
+  };
 
   const handleCloseModalLogin = () => {
-    setIsModalLoginOpen(false)
-  }
+    setIsModalLoginOpen(false);
+  };
 
   useEffect(() => {
     if (user) {
       getUser(user.uid).then((userData) => {
         if (userData) {
-          setFirstName(userData.firstName)
+          setFirstName(userData.firstName);
         }
-      })
+      });
     }
-  }, [user])
+  }, [user]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between">
         <div className="flex justify-between basis-3/5">
           <div className="flex items-center gap-2 ml-20">
-            <span className=""><BookOpen className="h-13 w-15"/></span>
-            <span className="font-bold tracking-wider text-3xl italic">Anime Diary</span>
+            <span className="">
+              <BookOpen className="h-13 w-15" />
+            </span>
+            <span className="font-bold tracking-wider text-3xl italic">
+              Anime Diary
+            </span>
           </div>
           {/* Navigation Links */}
           <nav className="flex items-center gap-6">
@@ -73,19 +77,29 @@ export function NavBar() {
         <div>
           {/* Auth Buttons */}
           <div className="mr-8">
-            { !user ? (
+            {!user ? (
               <div className="flex gap-2">
-                <Button variant="ghost" size="lg" onClick={handleModalLogin}>Login</Button>
-                <Button size="lg" className="text-white" onClick={handleModalSignUp}>Sign Up</Button>
-              </div>      
-            ): (
+                <Button variant="ghost" size="lg" onClick={handleModalLogin}>
+                  Login
+                </Button>
+                <Button
+                  size="lg"
+                  className="text-white"
+                  onClick={handleModalSignUp}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            ) : (
               <div className="flex items-center gap-4">
                 <span className="text-lg font-bold">{firstName}</span>
-                <Button variant="secondary" size="lg" onClick={logout}>Logout</Button>
-              </div>      
-            )}         
+                <Button variant="secondary" size="lg" onClick={logout}>
+                  Logout
+                </Button>
+              </div>
+            )}
           </div>
-        </div>   
+        </div>
       </div>
       <SignUp isOpen={isModalSignUpOpen} onClose={handleCloseModalSignUp} />
       <Login isOpen={isModalLoginOpen} onClose={handleCloseModalLogin} />

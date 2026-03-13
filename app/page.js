@@ -7,16 +7,16 @@ export default function Home() {
         <CardDashboard title="Anime Finished">
           <p>120</p>
         </CardDashboard>
-        <CardDashboard title="Episodes Watched" >
+        <CardDashboard title="Episodes Watched">
           <p>1000</p>
         </CardDashboard>
-        <CardDashboard title="Anime Dropped" >
+        <CardDashboard title="Anime Dropped">
           <p>1000</p>
         </CardDashboard>
-        <CardDashboard title="Movies Watched" >
+        <CardDashboard title="Movies Watched">
           <p>1000</p>
         </CardDashboard>
-      </div>     
+      </div>
     </div>
   );
 }
