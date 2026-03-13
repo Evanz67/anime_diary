@@ -24,7 +24,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^8.57.1",
+    "eslint": "^10.0.3",
     "eslint-config-next": "16.1.6",
     "prettier": "^3.8.1",
     "prettier-eslint": "^16.4.2",
