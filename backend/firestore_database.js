@@ -183,8 +183,22 @@ export const deleteEntries = async (user, seriesId, entryId) => {
       "entries",
       entryId,
     );
+    const entriesRefCollection = collection(
+      db,
+      "users",
+      user.uid,
+      "series",
+      seriesId,
+      "entries",
+    );
+    const seriesRef = doc(db, "users", user.uid, "series", seriesId);
     await deleteDoc(entriesRef);
-    return entryId;
+    const entriesData = await getDocs(entriesRefCollection);
+    await updateDoc(seriesRef, {
+      entries: entriesData.docs.length,
+    });
+    const data = [entryId, seriesId, entriesData.docs.length];
+    return data;
   } catch (error) {
     console.error("Error deleting document: ", error);
   }

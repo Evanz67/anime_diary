@@ -138,8 +138,9 @@ export default function AnimeList() {
       setConfirmationOpen(false);
     }
     if (deleteEntriesState) {
-      const deletedEntriesIdRef = await deleteEntries(user, seriesId, entryId);
-      setDeletedEntriesId(deletedEntriesIdRef);
+      const deletedEntriesRef = await deleteEntries(user, seriesId, entryId);
+      setDeletedEntriesId(deletedEntriesRef[0]);
+      setSeriesRef((prev) => ({ ...prev, id: deletedEntriesRef[1], entries : deletedEntriesRef[2]}));
       setConfirmationOpen(false);
     }
     setConfirmationLoading(false);
