@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState, useEffect, use } from "react";
-import { Button } from "@/components/ui/button";
-import { SignUp } from "@/components/custom/authentication/signup";
-import { Login } from "@/components/custom/authentication/login";
-import { Home, Rows3, Trash, BookOpen } from "lucide-react";
-import { useAuth } from "@/backend/auth_provider";
-import { getUser } from "@/backend/firestore_database";
+import Link from 'next/link';
+import { useState, useEffect, use } from 'react';
+import { Button } from '@/components/ui/button';
+import { SignUp } from '@/components/custom/authentication/signup';
+import { Login } from '@/components/custom/authentication/login';
+import { Home, Rows3, Trash, BookOpen } from 'lucide-react';
+import { useAuth } from '@/backend/auth_provider';
+import { getUser } from '@/backend/firestore_database';
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "Anime List", url: "/anime_list", icon: Rows3 },
-  { title: "Dropped List", url: "/calendar", icon: Trash },
+  { title: 'Dashboard', url: '/', icon: Home },
+  { title: 'Anime List', url: '/anime_list', icon: Rows3 },
+  { title: 'Dropped List', url: '/calendar', icon: Trash },
 ];
 
 export function NavBar() {
   const [isModalSignUpOpen, setIsModalSignUpOpen] = useState(false);
   const [isModalLoginOpen, setIsModalLoginOpen] = useState(false);
-  const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState('');
 
   const { user, logout } = useAuth();
 
@@ -56,9 +56,7 @@ export function NavBar() {
             <span className="">
               <BookOpen className="h-13 w-15" />
             </span>
-            <span className="font-bold tracking-wider text-3xl italic">
-              Anime Diary
-            </span>
+            <span className="font-bold tracking-wider text-3xl italic">Anime Diary</span>
           </div>
           {/* Navigation Links */}
           <nav className="flex items-center gap-6">
@@ -82,11 +80,7 @@ export function NavBar() {
                 <Button variant="ghost" size="lg" onClick={handleModalLogin}>
                   Login
                 </Button>
-                <Button
-                  size="lg"
-                  className="text-white"
-                  onClick={handleModalSignUp}
-                >
+                <Button size="lg" className="text-white" onClick={handleModalSignUp}>
                   Sign Up
                 </Button>
               </div>
