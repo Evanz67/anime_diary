@@ -1,6 +1,11 @@
 'use client';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -25,7 +30,7 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
       alert('Please enter a valid type (TV, OVA, ONA, or Movie).');
       return;
     }
-    const newData = { ...data, episode: parseInt(data.episode), id: user.uid };
+    const newData = { ...data, episode: parseInt(data.episode), uid: user.uid };
     try {
       setLoading(true);
       const entryRef = await addEntry(user, seriesId, newData);
@@ -49,12 +54,18 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Add Anime Entry</DialogTitle>
+          <DialogTitle className="text-xl font-bold">
+            Add Anime Entry
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
-            <Input {...register('name')} placeholder="Enter an entry name" required />
+            <Input
+              {...register('name')}
+              placeholder="Enter an entry name"
+              required
+            />
           </Field>
           <Field>
             <FieldLabel className="italic"># of Episode</FieldLabel>
@@ -77,7 +88,12 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
             />
           </Field>
           <div className="flex justify-center">
-            <Button type="submit" variant="secondary" size="lg" disabled={loading}>
+            <Button
+              type="submit"
+              variant="secondary"
+              size="lg"
+              disabled={loading}
+            >
               {loading ? <div>Adding entry...</div> : <div>Add</div>}
             </Button>
           </div>

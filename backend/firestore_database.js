@@ -211,10 +211,11 @@ export const getAllEntries = async (user) => {
   try {
     const allEntriesRef = query(
       collectionGroup(db, 'entries'),
-      where('id', '==', user.uid)
+      where('uid', '==', user.uid)
     );
     const allEntriesData = await getDocs(allEntriesRef);
     return allEntriesData.docs.map((doc) => ({
+      id: doc.id,
       ...doc.data(),
     }));
   } catch (error) {
