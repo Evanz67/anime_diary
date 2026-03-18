@@ -1,11 +1,16 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { AnimeListTable } from "@/components/custom/anime_list_component/anime_list_table";
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/custom/anime_list_component/anime_list_modal/modal";
-import { deleteSeries, deleteEntries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
+import { useState } from 'react';
+import { AnimeListTable } from '@/components/custom/anime_list_component/anime_list_table';
+import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/custom/anime_list_component/anime_list_modal/modal';
+import {
+  deleteSeries,
+  deleteEntries,
+  getEntries,
+  getSeries,
+} from '@/backend/firestore_database';
+import { useAuth } from '@/backend/auth_provider';
 
 export default function AnimeList() {
   const [isModalEntriesOpen, setIsModalEntriesOpen] = useState(false);
@@ -15,13 +20,13 @@ export default function AnimeList() {
   const [isModalUpdateEntriesOpen, setIsModalUpdateEntriesOpen] =
     useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const [animeName, setAnimeName] = useState("");
-  const [confirmationName, setconfirmationName] = useState("");
+  const [animeName, setAnimeName] = useState('');
+  const [confirmationName, setconfirmationName] = useState('');
   const [confirmationLoading, setConfirmationLoading] = useState(false);
-  const [seriesId, setSeriesId] = useState("");
-  const [entryId, setEntryId] = useState("");
-  const [deletedSeriesId, setDeletedSeriesId] = useState("");
-  const [deletedEntriesId, setDeletedEntriesId] = useState("");
+  const [seriesId, setSeriesId] = useState('');
+  const [entryId, setEntryId] = useState('');
+  const [deletedSeriesId, setDeletedSeriesId] = useState('');
+  const [deletedEntriesId, setDeletedEntriesId] = useState('');
   const [newSeries, setNewSeries] = useState({});
   const [newEntry, setNewEntry] = useState({});
   const [seriesRef, setSeriesRef] = useState({});
@@ -134,12 +139,25 @@ export default function AnimeList() {
     setConfirmationLoading(true);
     if (deleteSeriesState) {
       const deletedSeriesIdRef = await deleteSeries(user, seriesId);
+      const seriesData = await getSeries(user);
       setDeletedSeriesId(deletedSeriesIdRef);
+      if (seriesData.length === 0) {
+        setDeleteSeriesState(false);
+      }
       setConfirmationOpen(false);
     }
     if (deleteEntriesState) {
-      const deletedEntriesIdRef = await deleteEntries(user, seriesId, entryId);
-      setDeletedEntriesId(deletedEntriesIdRef);
+      const deletedEntriesRef = await deleteEntries(user, seriesId, entryId);
+      const entriesData = await getEntries(user, seriesId);
+      setDeletedEntriesId(deletedEntriesRef[0]);
+      setSeriesRef((prev) => ({
+        ...prev,
+        id: deletedEntriesRef[1],
+        entries: deletedEntriesRef[2],
+      }));
+      if (entriesData.length === 0) {
+        setDeleteEntriesState(false);
+      }
       setConfirmationOpen(false);
     }
     setConfirmationLoading(false);

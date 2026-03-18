@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { useAuth } from "@/backend/auth_provider";
-import { addEntry } from "@/backend/firestore_database";
-import { useState, useEffect } from "react";
+} from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '@/backend/auth_provider';
+import { addEntry } from '@/backend/firestore_database';
+import { useState, useEffect } from 'react';
 
 export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
   const { register, handleSubmit, reset } = useForm();
@@ -21,22 +21,22 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
 
   const onSubmit = async (data) => {
     if (
-      data.type !== "TV" &&
-      data.type !== "OVA" &&
-      data.type !== "ONA" &&
-      data.type !== "Movie" &&
-      data.type !== ""
+      data.type !== 'TV' &&
+      data.type !== 'OVA' &&
+      data.type !== 'ONA' &&
+      data.type !== 'Movie' &&
+      data.type !== ''
     ) {
-      alert("Please enter a valid type (TV, OVA, ONA, or Movie).");
+      alert('Please enter a valid type (TV, OVA, ONA, or Movie).');
       return;
     }
-    const newData = { ...data, episode: parseInt(data.episode) };
+    const newData = { ...data, episode: parseInt(data.episode), uid: user.uid };
     try {
       setLoading(true);
       const entryRef = await addEntry(user, seriesId, newData);
       handleNewEntry({ id: entryRef[0], ...newData }, entryRef[1]);
     } catch (error) {
-      alert("Error adding entry: " + error.message);
+      alert('Error adding entry: ' + error.message);
     } finally {
       setLoading(false);
       reset();
@@ -62,7 +62,7 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
             <Input
-              {...register("name")}
+              {...register('name')}
               placeholder="Enter an entry name"
               required
             />
@@ -74,7 +74,7 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
               step="1"
               min="1"
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register("episode")}
+              {...register('episode')}
               placeholder="Enter number of episodes"
               required
             />
@@ -82,7 +82,7 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
           <Field>
             <FieldLabel className="italic">Type</FieldLabel>
             <Input
-              {...register("type")}
+              {...register('type')}
               placeholder="Enter type (e.g. TV, OVA, ONA, Movie)"
               required
             />
