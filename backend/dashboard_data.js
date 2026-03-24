@@ -28,4 +28,4 @@ export const typesWatched = async (user, type) => {
     }
   });
   return numberofTypeWatched;
-}
+};

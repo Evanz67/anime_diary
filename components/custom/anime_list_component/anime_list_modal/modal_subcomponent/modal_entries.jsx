@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -6,7 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -14,42 +14,51 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ModalCardEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries";
-import { getEntries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+} from '@/components/ui/table';
+import { ModalCardEntries } from '@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries';
+import { getEntries } from '@/backend/firestore_database';
+import { useAuth } from '@/context/auth_provider';
+import { useData } from '@/context/data_provider';
+import { useModal } from '@/context/modal_provider';
+import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 import {
   FilePlusCorner,
   Trash2,
   TextCursorInput,
   SquarePen,
-} from "lucide-react";
+} from 'lucide-react';
 
 export function ModalEntries({
   isOpen,
   onClose,
-  handleOpenModalAddEntries,
-  handleModalUpdateAnime,
   handleModalEntriesDetails,
   handleDeleteEntries,
   handleCancelDeleteEntries,
   deleteEntriesState,
   animeName,
-  seriesId,
+  //seriesId,
   newEntry,
   entryUpdate,
   deletedEntriesId,
 }) {
   const columns = [
-    { key: "name", name: "Anime" },
-    { key: "episode", name: "# of Episode" },
-    { key: "type", name: "Type" },
+    { key: 'name', name: 'Anime' },
+    { key: 'episode', name: '# of Episode' },
+    { key: 'type', name: 'Type' },
   ];
   const { user } = useAuth();
+  const { data, seriesId } = useData();
+  const { openModal } = useModal();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const handleEntryDetails = (row) => {
+    if (!deleteEntriesState) {
+      openModal('updateEntries');
+    }
+    handleModalEntriesDetails(row);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,7 +92,7 @@ export function ModalEntries({
         const entryData = entries.find((entry) => entry.id === entryUpdate.id);
         const newEntryData = { ...entryData, ...entryUpdate };
         const updatedEntries = entries.filter(
-          (entry) => entry.id !== entryUpdate.id,
+          (entry) => entry.id !== entryUpdate.id
         );
         setEntries([...updatedEntries, newEntryData]);
       }
@@ -98,7 +107,7 @@ export function ModalEntries({
       setLoading(true);
       if (entries.some((entry) => entry.id === deletedEntriesId)) {
         const updatedEntries = entries.filter(
-          (entry) => entry.id !== deletedEntriesId,
+          (entry) => entry.id !== deletedEntriesId
         );
         setEntries(updatedEntries);
       }
@@ -114,7 +123,11 @@ export function ModalEntries({
         <DialogHeader>
           <DialogTitle className="text-xl italic">
             <span className="mr-2">{animeName}</span>
-            <Button variant="ghost" size="sm" onClick={handleModalUpdateAnime}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => openModal('updateAnime')}
+            >
               <TextCursorInput />
             </Button>
           </DialogTitle>
@@ -124,12 +137,12 @@ export function ModalEntries({
           <Button
             variant="secondary"
             size="lg"
-            onClick={handleOpenModalAddEntries}
+            onClick={() => openModal('addEntries')}
           >
             <FilePlusCorner className="h-4 w-4" />
           </Button>
           <Button
-            variant={deleteEntriesState ? "destructive" : "secondary"}
+            variant={deleteEntriesState ? 'destructive' : 'secondary'}
             size="lg"
             onClick={
               deleteEntriesState
@@ -163,7 +176,7 @@ export function ModalEntries({
                   {entries.map((row) => (
                     <TableRow
                       key={row.id}
-                      onClick={() => handleModalEntriesDetails(row)}
+                      onClick={() => handleEntryDetails(row)}
                       className="cursor-pointer"
                     >
                       {columns.map((column) => (

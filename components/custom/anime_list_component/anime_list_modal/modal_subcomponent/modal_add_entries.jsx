@@ -10,7 +10,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
-import { useAuth } from '@/backend/auth_provider';
+import { useAuth } from '@/context/auth_provider';
 import { addEntry } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 

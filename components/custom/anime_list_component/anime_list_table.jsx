@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -8,35 +8,40 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react";
-import { getSeries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
+} from 'lucide-react';
+import { getSeries } from '@/backend/firestore_database';
+import { useAuth } from '@/context/auth_provider';
+import { useModal } from '@/context/modal_provider';
+import { useData } from '@/context/data_provider';
 
 export function AnimeListTable({
   handleModalEntries,
-  newSeries,
   deletedSeriesId,
   seriesRef,
   seriesUpdate,
+  deleteSeriesState,
 }) {
   const columns = [
-    { key: "name", name: "Anime Series" },
-    { key: "entries", name: "# of Entries" },
+    { key: 'name', name: 'Anime Series' },
+    { key: 'entries', name: '# of Entries' },
   ];
   const { user } = useAuth();
+  const { data, seriesId } = useData();
+  const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
   });
   const [series, setSeries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [initializedState, setInitializedState] = useState(false);
 
   const totalPages = Math.ceil(series.length / pagination.pageSize);
   const startIndex = pagination.pageIndex * pagination.pageSize;
@@ -65,11 +70,19 @@ export function AnimeListTable({
     }));
   };
 
+  const handleEntry = (row) => {
+    if (!deleteSeriesState) {
+      openModal('entries');
+    }
+    handleModalEntries(row);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const data = await getSeries(user);
       setSeries(data);
+      setInitializedState(true);
       setLoading(false);
     };
 
@@ -77,21 +90,26 @@ export function AnimeListTable({
   }, [user]);
 
   useEffect(() => {
-    setLoading(true);
-    setSeries((prev) => [...prev, { ...newSeries }]);
-    setLoading(false);
-  }, [newSeries]);
+    if (initializedState) {
+      setLoading(true);
+      setSeries((prev) => [
+        ...prev,
+        { id: seriesId, entries: data.entries, name: data.newSeries },
+      ]);
+      setLoading(false);
+    }
+  }, [seriesId]);
 
   useEffect(() => {
     const updateAnimeSeries = () => {
       setLoading(true);
       if (series.some((series) => series.id === seriesUpdate.id)) {
         const seriesData = series.find(
-          (series) => series.id === seriesUpdate.id,
+          (series) => series.id === seriesUpdate.id
         );
         const newSeriesData = { ...seriesData, name: seriesUpdate.name };
         const updatedSeries = series.filter(
-          (series) => series.id !== seriesUpdate.id,
+          (series) => series.id !== seriesUpdate.id
         );
         setSeries([...updatedSeries, newSeriesData]);
       }
@@ -108,7 +126,7 @@ export function AnimeListTable({
         const seriesData = series.find((series) => series.id === seriesRef.id);
         const newSeriesData = { ...seriesData, entries: seriesRef.entries };
         const updatedSeries = series.filter(
-          (series) => series.id !== seriesRef.id,
+          (series) => series.id !== seriesRef.id
         );
         setSeries([...updatedSeries, newSeriesData]);
       }
@@ -123,7 +141,7 @@ export function AnimeListTable({
       setLoading(true);
       if (series.some((series) => series.id === deletedSeriesId)) {
         const updatedSeries = series.filter(
-          (series) => series.id !== deletedSeriesId,
+          (series) => series.id !== deletedSeriesId
         );
         setSeries(updatedSeries);
       }
@@ -157,7 +175,7 @@ export function AnimeListTable({
             {paginatedData.map((row) => (
               <TableRow
                 key={row.id}
-                onClick={() => handleModalEntries(row)}
+                onClick={() => handleEntry(row)}
                 className="cursor-pointer"
               >
                 {columns.map((column) => (
@@ -172,7 +190,7 @@ export function AnimeListTable({
       {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {startIndex + 1}-{Math.min(endIndex, series.length)} of{" "}
+          Showing {startIndex + 1}-{Math.min(endIndex, series.length)} of{' '}
           {series.length}
         </div>
         <div className="flex items-center space-x-2">

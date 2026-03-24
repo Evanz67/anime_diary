@@ -6,7 +6,7 @@ import {
   episodesWatched,
   typesWatched,
 } from '@/backend/dashboard_data';
-import { useAuth } from '@/backend/auth_provider';
+import { useAuth } from '@/context/auth_provider';
 import { useState, useEffect } from 'react';
 
 export default function Home() {

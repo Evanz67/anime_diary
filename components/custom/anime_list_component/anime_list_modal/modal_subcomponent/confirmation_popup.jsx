@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 export function ConfirmationPopup({
   isOpen,
@@ -26,8 +26,8 @@ export function ConfirmationPopup({
         </DialogHeader>
         <div className="text-center">
           Are you sure you want to delete "
-          <span className="italic underline">{name}</span>"{" "}
-          {deleteEntriesState ? "?" : "and all of its entries?"}
+          <span className="italic underline">{name}</span>"{' '}
+          {deleteEntriesState ? '?' : 'and all of its entries?'}
         </div>
         {!loading ? (
           <div className="flex justify-center gap-4 mt-4">

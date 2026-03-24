@@ -10,16 +10,10 @@ import {
   getEntries,
   getSeries,
 } from '@/backend/firestore_database';
-import { useAuth } from '@/backend/auth_provider';
+import { useAuth } from '@/context/auth_provider';
+import { useModal } from '@/context/modal_provider';
 
 export default function AnimeList() {
-  const [isModalEntriesOpen, setIsModalEntriesOpen] = useState(false);
-  const [isModalAddAnimeOpen, setIsModalAddAnimeOpen] = useState(false);
-  const [isModalAddEntriesOpen, setIsModalAddEntriesOpen] = useState(false);
-  const [isModalUpdateAnimeOpen, setIsModalUpdateAnimeOpen] = useState(false);
-  const [isModalUpdateEntriesOpen, setIsModalUpdateEntriesOpen] =
-    useState(false);
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [animeName, setAnimeName] = useState('');
   const [confirmationName, setconfirmationName] = useState('');
   const [confirmationLoading, setConfirmationLoading] = useState(false);
@@ -27,7 +21,6 @@ export default function AnimeList() {
   const [entryId, setEntryId] = useState('');
   const [deletedSeriesId, setDeletedSeriesId] = useState('');
   const [deletedEntriesId, setDeletedEntriesId] = useState('');
-  const [newSeries, setNewSeries] = useState({});
   const [newEntry, setNewEntry] = useState({});
   const [seriesRef, setSeriesRef] = useState({});
   const [seriesUpdate, setSeriesUpdate] = useState({});
@@ -35,68 +28,27 @@ export default function AnimeList() {
   const [deleteSeriesState, setDeleteSeriesState] = useState(false);
   const [deleteEntriesState, setDeleteEntriesState] = useState(false);
   const { user } = useAuth();
+  const { openModal, closeModal } = useModal();
 
   const handleModalEntries = (row) => {
     if (!deleteSeriesState) {
       setAnimeName(row.name);
       setSeriesId(row.id);
-      setIsModalEntriesOpen(true);
     } else {
       setSeriesId(row.id);
       setconfirmationName(row.name);
-      setConfirmationOpen(true);
+      openModal('confirmation');
     }
-  };
-
-  const handleCloseConfirmation = () => {
-    setConfirmationOpen(false);
-  };
-
-  const handleCloseModalEntries = () => {
-    setIsModalEntriesOpen(false);
   };
 
   const handleModalEntriesDetails = (row) => {
     if (!deleteEntriesState) {
       setEntryId(row.id);
-      setIsModalUpdateEntriesOpen(true);
     } else {
       setEntryId(row.id);
       setconfirmationName(row.name);
-      setConfirmationOpen(true);
+      openModal('confirmation');
     }
-  };
-
-  const handleCloseUpdateEntries = () => {
-    setIsModalUpdateEntriesOpen(false);
-  };
-
-  const handleModalAddAnime = () => {
-    setIsModalAddAnimeOpen(true);
-  };
-
-  const handleCloseModalAddAnime = () => {
-    setIsModalAddAnimeOpen(false);
-  };
-
-  const handleModalAddEntries = () => {
-    setIsModalAddEntriesOpen(true);
-  };
-
-  const handleCloseModalAddEntries = () => {
-    setIsModalAddEntriesOpen(false);
-  };
-
-  const handleModalUpdateAnime = () => {
-    setIsModalUpdateAnimeOpen(true);
-  };
-
-  const handleCloseModalUpdateAnime = () => {
-    setIsModalUpdateAnimeOpen(false);
-  };
-
-  const handleNewSeries = (seriesName) => {
-    setNewSeries(seriesName);
   };
 
   const handleNewEntry = (entryName, seriesRef) => {
@@ -144,7 +96,7 @@ export default function AnimeList() {
       if (seriesData.length === 0) {
         setDeleteSeriesState(false);
       }
-      setConfirmationOpen(false);
+      closeModal(); //close confirmation
     }
     if (deleteEntriesState) {
       const deletedEntriesRef = await deleteEntries(user, seriesId, entryId);
@@ -158,7 +110,7 @@ export default function AnimeList() {
       if (entriesData.length === 0) {
         setDeleteEntriesState(false);
       }
-      setConfirmationOpen(false);
+      closeModal(); //close confirmation
     }
     setConfirmationLoading(false);
   };
@@ -171,7 +123,7 @@ export default function AnimeList() {
           <Button
             variant="secondary"
             size="lg"
-            onClick={handleModalAddAnime}
+            onClick={() => openModal('addAnime')}
             disabled={deleteSeriesState}
           >
             Add Series
@@ -193,34 +145,19 @@ export default function AnimeList() {
       </div>
       <AnimeListTable
         handleModalEntries={handleModalEntries}
-        newSeries={newSeries}
         deletedSeriesId={deletedSeriesId}
         seriesRef={seriesRef}
         seriesUpdate={seriesUpdate}
+        deleteSeriesState={deleteSeriesState}
       />
       <Modal
-        isModalEntriesOpen={isModalEntriesOpen}
-        handleCloseModalEntries={handleCloseModalEntries}
-        isModalAddAnimeOpen={isModalAddAnimeOpen}
-        handleCloseModalAddAnime={handleCloseModalAddAnime}
-        isModalAddEntriesOpen={isModalAddEntriesOpen}
-        handleCloseModalAddEntries={handleCloseModalAddEntries}
-        handleOpenModalAddEntries={handleModalAddEntries}
-        isModalUpdateAnimeOpen={isModalUpdateAnimeOpen}
-        handleModalUpdateAnime={handleModalUpdateAnime}
-        handleCloseModalUpdateAnime={handleCloseModalUpdateAnime}
-        isModalUpdateEntriesOpen={isModalUpdateEntriesOpen}
         handleModalEntriesDetails={handleModalEntriesDetails}
-        handleCloseUpdateEntries={handleCloseUpdateEntries}
-        confirmationOpen={confirmationOpen}
-        handleCloseConfirmation={handleCloseConfirmation}
         confirmationLoading={confirmationLoading}
         handleConfirmDelete={handleConfirmDelete}
         animeName={animeName}
         confirmationName={confirmationName}
         seriesId={seriesId}
         entryId={entryId}
-        handleNewSeries={handleNewSeries}
         handleNewEntry={handleNewEntry}
         newEntry={newEntry}
         handleUpdateAnime={handleUpdateAnime}

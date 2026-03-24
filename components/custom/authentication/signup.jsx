@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { useAuth } from "@/backend/auth_provider";
-import { useState } from "react";
-import { addUser } from "@/backend/firestore_database";
+} from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '@/context/auth_provider';
+import { useState } from 'react';
+import { addUser } from '@/backend/firestore_database';
 
 export function SignUp({ isOpen, onClose }) {
   const { register, handleSubmit, reset } = useForm();
@@ -32,7 +32,7 @@ export function SignUp({ isOpen, onClose }) {
       });
       alert(`User "${data.email}" signed up successfully!`);
     } catch (error) {
-      alert("Error signing up user: " + error.message);
+      alert('Error signing up user: ' + error.message);
     } finally {
       setLoading(false);
       reset();
@@ -52,7 +52,7 @@ export function SignUp({ isOpen, onClose }) {
           <Field>
             <FieldLabel className="italic">First Name</FieldLabel>
             <Input
-              {...register("firstName")}
+              {...register('firstName')}
               placeholder="Enter first name"
               required
             />
@@ -60,7 +60,7 @@ export function SignUp({ isOpen, onClose }) {
           <Field>
             <FieldLabel className="italic">Last Name</FieldLabel>
             <Input
-              {...register("lastName")}
+              {...register('lastName')}
               placeholder="Enter last name"
               required
             />
@@ -68,7 +68,7 @@ export function SignUp({ isOpen, onClose }) {
           <Field>
             <FieldLabel className="italic">Email</FieldLabel>
             <Input
-              {...register("email")}
+              {...register('email')}
               placeholder="Enter email address"
               required
             />
@@ -76,7 +76,7 @@ export function SignUp({ isOpen, onClose }) {
           <Field>
             <FieldLabel className="italic">Password</FieldLabel>
             <Input
-              {...register("password")}
+              {...register('password')}
               placeholder="Enter password"
               type="password"
               required

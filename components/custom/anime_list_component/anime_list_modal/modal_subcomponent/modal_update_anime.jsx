@@ -1,17 +1,17 @@
-"use client";
+'use client';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
-import { updateSeries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
+} from '@/components/ui/dialog';
+import { Field } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
+import { updateSeries } from '@/backend/firestore_database';
+import { useAuth } from '@/context/auth_provider';
 
 export function ModalUpdateAnime({
   isOpen,
@@ -29,7 +29,7 @@ export function ModalUpdateAnime({
       await updateSeries(user, seriesId, data.name);
       handleUpdateAnime(seriesId, data.name);
     } catch (error) {
-      alert("Error updating series: " + error.message);
+      alert('Error updating series: ' + error.message);
     } finally {
       setLoading(false);
       reset();
@@ -54,7 +54,7 @@ export function ModalUpdateAnime({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register("name")}
+              {...register('name')}
               placeholder="Enter a new anime series name"
               required
             />

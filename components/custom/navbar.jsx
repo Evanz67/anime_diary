@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { SignUp } from '@/components/custom/authentication/signup';
 import { Login } from '@/components/custom/authentication/login';
 import { Home, Rows3, Trash, BookOpen } from 'lucide-react';
-import { useAuth } from '@/backend/auth_provider';
+import { useAuth } from '@/context/auth_provider';
 import { getUser } from '@/backend/firestore_database';
 
 const menuItems = [
@@ -56,7 +56,9 @@ export function NavBar() {
             <span className="">
               <BookOpen className="h-13 w-15" />
             </span>
-            <span className="font-bold tracking-wider text-3xl italic">Anime Diary</span>
+            <span className="font-bold tracking-wider text-3xl italic">
+              Anime Diary
+            </span>
           </div>
           {/* Navigation Links */}
           <nav className="flex items-center gap-6">
@@ -80,7 +82,11 @@ export function NavBar() {
                 <Button variant="ghost" size="lg" onClick={handleModalLogin}>
                   Login
                 </Button>
-                <Button size="lg" className="text-white" onClick={handleModalSignUp}>
+                <Button
+                  size="lg"
+                  className="text-white"
+                  onClick={handleModalSignUp}
+                >
                   Sign Up
                 </Button>
               </div>

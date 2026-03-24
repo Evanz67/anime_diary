@@ -1,22 +1,24 @@
-"use client";
+'use client';
 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Field } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import { useState, useEffect } from "react";
-import { addSeries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
+} from '@/components/ui/dialog';
+import { Field } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
+import { addSeries } from '@/backend/firestore_database';
+import { useAuth } from '@/context/auth_provider';
+import { useData } from '@/context/data_provider';
 
-export function ModalAddAnime({ isOpen, onClose, handleNewSeries }) {
+export function ModalAddAnime({ isOpen, onClose }) {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
+  const { passData } = useData();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -24,16 +26,16 @@ export function ModalAddAnime({ isOpen, onClose, handleNewSeries }) {
       try {
         setLoading(true);
         const seriesId = await addSeries(user, data);
-        handleNewSeries({ id: seriesId, entries: 0, ...data });
+        passData({ seriesId: seriesId, entries: 0, newSeries: data.name });
       } catch (error) {
-        alert("Error adding series: " + error.message);
+        alert('Error adding series: ' + error.message);
       } finally {
         setLoading(false);
         reset();
         onClose();
       }
     } else {
-      alert("Please login to add a series.");
+      alert('Please login to add a series.');
     }
   };
 
@@ -54,7 +56,7 @@ export function ModalAddAnime({ isOpen, onClose, handleNewSeries }) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register("name")}
+              {...register('name')}
               placeholder="Enter anime series name"
               required
             />
