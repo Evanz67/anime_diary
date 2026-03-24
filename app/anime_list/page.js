@@ -154,7 +154,6 @@ export default function AnimeList() {
         handleModalEntriesDetails={handleModalEntriesDetails}
         confirmationLoading={confirmationLoading}
         handleConfirmDelete={handleConfirmDelete}
-        animeName={animeName}
         confirmationName={confirmationName}
         seriesId={seriesId}
         entryId={entryId}

@@ -22,12 +22,7 @@ import { useData } from '@/context/data_provider';
 import { useModal } from '@/context/modal_provider';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import {
-  FilePlusCorner,
-  Trash2,
-  TextCursorInput,
-  SquarePen,
-} from 'lucide-react';
+import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
 export function ModalEntries({
   isOpen,
@@ -36,8 +31,6 @@ export function ModalEntries({
   handleDeleteEntries,
   handleCancelDeleteEntries,
   deleteEntriesState,
-  animeName,
-  //seriesId,
   newEntry,
   entryUpdate,
   deletedEntriesId,
@@ -48,7 +41,7 @@ export function ModalEntries({
     { key: 'type', name: 'Type' },
   ];
   const { user } = useAuth();
-  const { data, seriesId } = useData();
+  const { data, getSeriesId } = useData();
   const { openModal } = useModal();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,29 +54,34 @@ export function ModalEntries({
   };
 
   useEffect(() => {
+    console.log(getSeriesId);
+  }, [getSeriesId]);
+
+  useEffect(() => {
     const fetchData = async () => {
+      if (!getSeriesId) {
+        return;
+      }
       setLoading(true);
-      const data = await getEntries(user, seriesId);
+      const data = await getEntries(user, getSeriesId);
       setEntries(data);
       setLoading(false);
     };
-    if (isOpen === true) {
-      fetchData();
-    }
-  }, [user, isOpen]);
+
+    const cleanUp = () => {
+      setEntries([]);
+      handleCancelDeleteEntries();
+    };
+
+    fetchData();
+    return cleanUp();
+  }, [user, getSeriesId]);
 
   useEffect(() => {
     setLoading(true);
     setEntries((prev) => [...prev, newEntry]);
     setLoading(false);
   }, [newEntry]);
-
-  useEffect(() => {
-    if (isOpen === false) {
-      setEntries([]);
-      handleCancelDeleteEntries();
-    }
-  }, [user, isOpen]);
 
   useEffect(() => {
     const updateEntryData = () => {
@@ -122,7 +120,7 @@ export function ModalEntries({
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl italic">
-            <span className="mr-2">{animeName}</span>
+            <span className="mr-2">{data.name}</span>
             <Button
               variant="ghost"
               size="sm"

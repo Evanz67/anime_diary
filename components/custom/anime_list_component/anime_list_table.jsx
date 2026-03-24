@@ -33,7 +33,7 @@ export function AnimeListTable({
     { key: 'entries', name: '# of Entries' },
   ];
   const { user } = useAuth();
-  const { data, seriesId } = useData();
+  const { data, addSeriesId, passData } = useData();
   const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -71,6 +71,7 @@ export function AnimeListTable({
   };
 
   const handleEntry = (row) => {
+    passData({ getSeriesId: row.id, name: row.name });
     if (!deleteSeriesState) {
       openModal('entries');
     }
@@ -94,11 +95,11 @@ export function AnimeListTable({
       setLoading(true);
       setSeries((prev) => [
         ...prev,
-        { id: seriesId, entries: data.entries, name: data.newSeries },
+        { id: addSeriesId, entries: data.entries, name: data.newSeries },
       ]);
       setLoading(false);
     }
-  }, [seriesId]);
+  }, [addSeriesId]);
 
   useEffect(() => {
     const updateAnimeSeries = () => {

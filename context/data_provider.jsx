@@ -7,7 +7,8 @@ const dataContext = createContext();
 export function DataProvider({ children }) {
   const [unprocessedData, setUnprocessedData] = useState({});
   const [data, setData] = useState({});
-  const [seriesId, setSeriesId] = useState('');
+  const [addSeriesId, setAddSeriesId] = useState('');
+  const [getSeriesId, setGetSeriesId] = useState('');
 
   const passData = (newData) => {
     setUnprocessedData((prev) => ({ ...prev, ...newData }));
@@ -15,9 +16,16 @@ export function DataProvider({ children }) {
 
   useEffect(() => {
     const processData = () => {
-      const { seriesId: sid, ...processedData} = unprocessedData;
-      if (sid && sid !== seriesId) {
-        setSeriesId(sid);
+      const {
+        addSeriesId: addSID,
+        getSeriesId: getSID,
+        ...processedData
+      } = unprocessedData;
+      if (addSID && addSID !== addSeriesId) {
+        setAddSeriesId(addSID);
+      }
+      if (getSID) {
+        setGetSeriesId(getSID);
       }
       setData((prev) => ({ ...prev, ...processedData }));
     };
@@ -27,7 +35,8 @@ export function DataProvider({ children }) {
   const value = {
     passData,
     data,
-    seriesId,
+    addSeriesId,
+    getSeriesId,
   };
 
   return <dataContext.Provider value={value}>{children}</dataContext.Provider>;

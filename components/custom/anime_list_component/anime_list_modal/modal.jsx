@@ -10,7 +10,6 @@ export function Modal({
   handleModalEntriesDetails,
   confirmationLoading,
   handleConfirmDelete,
-  animeName,
   confirmationName,
   seriesId,
   entryId,
@@ -28,29 +27,22 @@ export function Modal({
 
   return (
     <div>
-      {modalState.includes('entries') && (
-        <ModalEntries
-          isOpen={true}
-          onClose={closeModal}
-          handleModalEntriesDetails={handleModalEntriesDetails}
-          handleDeleteEntries={handleDeleteEntries}
-          handleCancelDeleteEntries={handleCancelDeleteEntries}
-          deleteEntriesState={deleteEntriesState}
-          animeName={animeName}
-          seriesId={seriesId}
-          newEntry={newEntry}
-          entryUpdate={entryUpdate}
-          deletedEntriesId={deletedEntriesId}
-        ></ModalEntries>
-      )}
-
+      <ModalEntries
+        isOpen={modalState.includes('entries')}
+        onClose={closeModal}
+        handleModalEntriesDetails={handleModalEntriesDetails}
+        handleDeleteEntries={handleDeleteEntries}
+        handleCancelDeleteEntries={handleCancelDeleteEntries}
+        deleteEntriesState={deleteEntriesState}
+        seriesId={seriesId}
+        newEntry={newEntry}
+        entryUpdate={entryUpdate}
+        deletedEntriesId={deletedEntriesId}
+      ></ModalEntries>
+      
       {modalState.includes('addAnime') && (
-        <ModalAddAnime
-          isOpen={true}
-          onClose={closeModal}
-        />
+        <ModalAddAnime isOpen={true} onClose={closeModal} />
       )}
-
       {modalState.includes('addEntries') && (
         <ModalAddEntries
           isOpen={true}
@@ -59,7 +51,6 @@ export function Modal({
           handleNewEntry={handleNewEntry}
         />
       )}
-
       {modalState.includes('updateAnime') && (
         <ModalUpdateAnime
           isOpen={true}
@@ -68,7 +59,6 @@ export function Modal({
           handleUpdateAnime={handleUpdateAnime}
         />
       )}
-
       {modalState.includes('updateEntries') && (
         <ModalUpdateEntries
           isOpen={true}
@@ -78,7 +68,6 @@ export function Modal({
           handleUpdateEntry={handleUpdateEntry}
         />
       )}
-
       {modalState.includes('confirmation') && (
         <ConfirmationPopup
           isOpen={true}

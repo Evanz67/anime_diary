@@ -123,6 +123,7 @@ export const addEntry = async (user, seriesId, entry) => {
 };
 
 export const getEntries = async (user, seriesId) => {
+  //console.log(seriesId);
   try {
     const entriesRef = collection(
       db,
