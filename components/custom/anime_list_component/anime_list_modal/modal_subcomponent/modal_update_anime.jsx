@@ -26,8 +26,8 @@ export function ModalUpdateAnime({
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await updateSeries(user, seriesId, data.name);
-      handleUpdateAnime(seriesId, data.name);
+      await updateSeries(user, seriesId, data.animeName);
+      handleUpdateAnime(seriesId, data.animeName);
     } catch (error) {
       alert('Error updating series: ' + error.message);
     } finally {
@@ -54,7 +54,7 @@ export function ModalUpdateAnime({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register('name')}
+              {...register('animeName')}
               placeholder="Enter a new anime series name"
               required
             />

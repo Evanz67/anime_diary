@@ -13,8 +13,6 @@ export function Modal({
   confirmationName,
   seriesId,
   entryId,
-  handleNewEntry,
-  newEntry,
   handleUpdateAnime,
   handleUpdateEntry,
   entryUpdate,
@@ -35,7 +33,6 @@ export function Modal({
         handleCancelDeleteEntries={handleCancelDeleteEntries}
         deleteEntriesState={deleteEntriesState}
         seriesId={seriesId}
-        newEntry={newEntry}
         entryUpdate={entryUpdate}
         deletedEntriesId={deletedEntriesId}
       ></ModalEntries>
@@ -49,7 +46,6 @@ export function Modal({
         isOpen={modalState.includes('addEntries')}
         onClose={closeModal}
         seriesId={seriesId}
-        handleNewEntry={handleNewEntry}
       />
 
       <ModalUpdateAnime

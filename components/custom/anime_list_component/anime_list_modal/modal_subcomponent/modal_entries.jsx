@@ -31,17 +31,16 @@ export function ModalEntries({
   handleDeleteEntries,
   handleCancelDeleteEntries,
   deleteEntriesState,
-  newEntry,
   entryUpdate,
   deletedEntriesId,
 }) {
   const columns = [
-    { key: 'name', name: 'Anime' },
-    { key: 'episode', name: '# of Episode' },
+    { key: 'entryName', name: 'Entry Name' },
+    { key: 'totalEpisode', name: '# of Episode' },
     { key: 'type', name: 'Type' },
   ];
   const { user } = useAuth();
-  const { data, getSeriesId } = useData();
+  const { getSeriesId, animeName, entryDetails } = useData();
   const { openModal } = useModal();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -52,10 +51,6 @@ export function ModalEntries({
     }
     handleModalEntriesDetails(row);
   };
-
-  useEffect(() => {
-    console.log(getSeriesId);
-  }, [getSeriesId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,9 +74,9 @@ export function ModalEntries({
 
   useEffect(() => {
     setLoading(true);
-    setEntries((prev) => [...prev, newEntry]);
+    setEntries((prev) => [...prev, entryDetails]);
     setLoading(false);
-  }, [newEntry]);
+  }, [entryDetails]);
 
   useEffect(() => {
     const updateEntryData = () => {
@@ -120,7 +115,7 @@ export function ModalEntries({
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl italic">
-            <span className="mr-2">{data.name}</span>
+            <span className="mr-2">{animeName}</span>
             <Button
               variant="ghost"
               size="sm"

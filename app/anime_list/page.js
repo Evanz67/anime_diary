@@ -21,8 +21,6 @@ export default function AnimeList() {
   const [entryId, setEntryId] = useState('');
   const [deletedSeriesId, setDeletedSeriesId] = useState('');
   const [deletedEntriesId, setDeletedEntriesId] = useState('');
-  const [newEntry, setNewEntry] = useState({});
-  const [seriesRef, setSeriesRef] = useState({});
   const [seriesUpdate, setSeriesUpdate] = useState({});
   const [entryUpdate, setEntryUpdate] = useState({});
   const [deleteSeriesState, setDeleteSeriesState] = useState(false);
@@ -32,11 +30,11 @@ export default function AnimeList() {
 
   const handleModalEntries = (row) => {
     if (!deleteSeriesState) {
-      setAnimeName(row.name);
+      setAnimeName(row.animeName);
       setSeriesId(row.id);
     } else {
       setSeriesId(row.id);
-      setconfirmationName(row.name);
+      setconfirmationName(row.animeName);
       openModal('confirmation');
     }
   };
@@ -51,15 +49,10 @@ export default function AnimeList() {
     }
   };
 
-  const handleNewEntry = (entryName, seriesRef) => {
-    setNewEntry(entryName);
-    setSeriesRef(seriesRef);
-  };
-
   const handleUpdateAnime = (seriesId, newAnimeName) => {
     setSeriesUpdate({
       id: seriesId,
-      name: newAnimeName,
+      animeName: newAnimeName,
     });
     setAnimeName(newAnimeName);
   };
@@ -146,7 +139,6 @@ export default function AnimeList() {
       <AnimeListTable
         handleModalEntries={handleModalEntries}
         deletedSeriesId={deletedSeriesId}
-        seriesRef={seriesRef}
         seriesUpdate={seriesUpdate}
         deleteSeriesState={deleteSeriesState}
       />
@@ -157,8 +149,6 @@ export default function AnimeList() {
         confirmationName={confirmationName}
         seriesId={seriesId}
         entryId={entryId}
-        handleNewEntry={handleNewEntry}
-        newEntry={newEntry}
         handleUpdateAnime={handleUpdateAnime}
         handleUpdateEntry={handleUpdateEntry}
         entryUpdate={entryUpdate}

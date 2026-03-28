@@ -24,16 +24,15 @@ import { useData } from '@/context/data_provider';
 export function AnimeListTable({
   handleModalEntries,
   deletedSeriesId,
-  seriesRef,
   seriesUpdate,
   deleteSeriesState,
 }) {
   const columns = [
-    { key: 'name', name: 'Anime Series' },
-    { key: 'entries', name: '# of Entries' },
+    { key: 'animeName', name: 'Anime Series' },
+    { key: 'totalEntries', name: '# of Entries' },
   ];
   const { user } = useAuth();
-  const { data, addSeriesId, passData } = useData();
+  const { addSeriesId, getSeriesId, passData, animeName, totalEntries } = useData();
   const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -71,7 +70,7 @@ export function AnimeListTable({
   };
 
   const handleEntry = (row) => {
-    passData({ getSeriesId: row.id, name: row.name });
+    passData({ action: 'getSeries', getSeriesId: row.id, animeName: row.animeName });
     if (!deleteSeriesState) {
       openModal('entries');
     }
@@ -95,7 +94,7 @@ export function AnimeListTable({
       setLoading(true);
       setSeries((prev) => [
         ...prev,
-        { id: addSeriesId, entries: data.entries, name: data.newSeries },
+        { id: addSeriesId, totalEntries: 0, animeName: animeName },
       ]);
       setLoading(false);
     }
@@ -108,7 +107,10 @@ export function AnimeListTable({
         const seriesData = series.find(
           (series) => series.id === seriesUpdate.id
         );
-        const newSeriesData = { ...seriesData, name: seriesUpdate.name };
+        const newSeriesData = {
+          ...seriesData,
+          animeName: seriesUpdate.animeName,
+        };
         const updatedSeries = series.filter(
           (series) => series.id !== seriesUpdate.id
         );
@@ -123,11 +125,11 @@ export function AnimeListTable({
   useEffect(() => {
     const updateEntryCount = () => {
       setLoading(true);
-      if (series.some((series) => series.id === seriesRef.id)) {
-        const seriesData = series.find((series) => series.id === seriesRef.id);
-        const newSeriesData = { ...seriesData, entries: seriesRef.entries };
+      if (series.some((series) => series.id === getSeriesId)) {
+        const seriesData = series.find((series) => series.id === getSeriesId);
+        const newSeriesData = { ...seriesData, totalEntries: totalEntries };
         const updatedSeries = series.filter(
-          (series) => series.id !== seriesRef.id
+          (series) => series.id !== getSeriesId
         );
         setSeries([...updatedSeries, newSeriesData]);
       }
@@ -135,7 +137,7 @@ export function AnimeListTable({
     };
 
     updateEntryCount();
-  }, [seriesRef]);
+  }, [totalEntries]);
 
   useEffect(() => {
     const deleteSeries = () => {

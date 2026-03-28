@@ -26,7 +26,12 @@ export function ModalAddAnime({ isOpen, onClose }) {
       try {
         setLoading(true);
         const seriesId = await addSeries(user, data);
-        passData({ addSeriesId: seriesId, entries: 0, newSeries: data.name });
+        passData({
+          action: 'addSeries',
+          addSeriesId: seriesId,
+          totalEntries: 0,
+          animeName: data.animeName,
+        });
       } catch (error) {
         alert('Error adding series: ' + error.message);
       } finally {
@@ -56,7 +61,7 @@ export function ModalAddAnime({ isOpen, onClose }) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register('name')}
+              {...register('animeName')}
               placeholder="Enter anime series name"
               required
             />

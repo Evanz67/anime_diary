@@ -11,12 +11,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
+import { useData } from '@/context/data_provider';
 import { addEntry } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 
-export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
+export function ModalAddEntries({ isOpen, onClose, seriesId }) {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
+  const { passData } = useData();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -30,11 +32,20 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
       alert('Please enter a valid type (TV, OVA, ONA, or Movie).');
       return;
     }
-    const newData = { ...data, episode: parseInt(data.episode), uid: user.uid };
+    const entryDetails = { ...data, totalEpisode: parseInt(data.totalEpisode) };
     try {
       setLoading(true);
-      const entryRef = await addEntry(user, seriesId, newData);
-      handleNewEntry({ id: entryRef[0], ...newData }, entryRef[1]);
+      const entryRef = await addEntry(user, seriesId, {
+        ...entryDetails,
+        uid: user.uid,
+      });
+      //handleNewEntry({ id: entryRef.id, ...newData }, entryRef.seriesRef);
+      passData({
+        action: 'addEntries',
+        addEntriesId: entryRef.id,
+        totalEntries: entryRef.totalEntries,
+        ...entryDetails,
+      });
     } catch (error) {
       alert('Error adding entry: ' + error.message);
     } finally {
@@ -62,7 +73,7 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
             <Input
-              {...register('name')}
+              {...register('entryName')}
               placeholder="Enter an entry name"
               required
             />
@@ -74,7 +85,7 @@ export function ModalAddEntries({ isOpen, onClose, seriesId, handleNewEntry }) {
               step="1"
               min="1"
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register('episode')}
+              {...register('totalEpisode')}
               placeholder="Enter number of episodes"
               required
             />

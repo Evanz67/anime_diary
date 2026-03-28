@@ -6,37 +6,50 @@ const dataContext = createContext();
 
 export function DataProvider({ children }) {
   const [unprocessedData, setUnprocessedData] = useState({});
-  const [data, setData] = useState({});
   const [addSeriesId, setAddSeriesId] = useState('');
   const [getSeriesId, setGetSeriesId] = useState('');
+  const [addEntriesId, setAddEntriesId] = useState('');
+  const [totalEntries, setTotalEntries] = useState(0);
+  const [animeName, setAnimeName] = useState('');
+  const [entryDetails, setEntryDetails] = useState({});
 
-  const passData = (state, action) => {
+  const passData = (newData) => {
     setUnprocessedData((prev) => ({ ...prev, ...newData }));
   };
 
   useEffect(() => {
     const processData = () => {
-      const {
-        addSeriesId: addSID,
-        getSeriesId: getSID,
-        ...processedData
-      } = unprocessedData;
-      if (addSID && addSID !== addSeriesId) {
-        setAddSeriesId(addSID);
+      const { action, ...dataBeingProcessed } = unprocessedData;
+      switch (action) {
+        case 'addSeries':
+          setAddSeriesId(dataBeingProcessed.addSeriesId);
+          setAnimeName(dataBeingProcessed.animeName);
+          break;
+        case 'getSeries':
+          setGetSeriesId(dataBeingProcessed.getSeriesId);
+          setAnimeName(dataBeingProcessed.animeName);
+          break;
+        case 'addEntries':
+          setAddEntriesId(dataBeingProcessed.addEntriesId);
+          setTotalEntries(dataBeingProcessed.totalEntries);
+          setEntryDetails({
+            entryName: dataBeingProcessed.entryName,
+            totalEpisode: dataBeingProcessed.totalEpisode,
+            type: dataBeingProcessed.type,
+          });
       }
-      if (getSID) {
-        setGetSeriesId(getSID);
-      }
-      setData((prev) => ({ ...prev, ...processedData }));
     };
     processData();
   }, [unprocessedData]);
 
   const value = {
     passData,
-    data,
     addSeriesId,
     getSeriesId,
+    addEntriesId,
+    totalEntries,
+    animeName,
+    entryDetails,
   };
 
   return <dataContext.Provider value={value}>{children}</dataContext.Provider>;
