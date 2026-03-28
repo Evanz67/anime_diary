@@ -39,45 +39,42 @@ export function Modal({
         entryUpdate={entryUpdate}
         deletedEntriesId={deletedEntriesId}
       ></ModalEntries>
-      
-      {modalState.includes('addAnime') && (
-        <ModalAddAnime isOpen={true} onClose={closeModal} />
-      )}
-      {modalState.includes('addEntries') && (
-        <ModalAddEntries
-          isOpen={true}
-          onClose={closeModal}
-          seriesId={seriesId}
-          handleNewEntry={handleNewEntry}
-        />
-      )}
-      {modalState.includes('updateAnime') && (
-        <ModalUpdateAnime
-          isOpen={true}
-          onClose={closeModal}
-          seriesId={seriesId}
-          handleUpdateAnime={handleUpdateAnime}
-        />
-      )}
-      {modalState.includes('updateEntries') && (
-        <ModalUpdateEntries
-          isOpen={true}
-          onClose={closeModal}
-          seriesId={seriesId}
-          entryId={entryId}
-          handleUpdateEntry={handleUpdateEntry}
-        />
-      )}
-      {modalState.includes('confirmation') && (
-        <ConfirmationPopup
-          isOpen={true}
-          onClose={closeModal}
-          name={confirmationName}
-          confirmDelete={handleConfirmDelete}
-          loading={confirmationLoading}
-          deleteEntriesState={deleteEntriesState}
-        />
-      )}
+
+      <ModalAddAnime
+        isOpen={modalState.includes('addAnime')}
+        onClose={closeModal}
+      />
+
+      <ModalAddEntries
+        isOpen={modalState.includes('addEntries')}
+        onClose={closeModal}
+        seriesId={seriesId}
+        handleNewEntry={handleNewEntry}
+      />
+
+      <ModalUpdateAnime
+        isOpen={modalState.includes('updateAnime')}
+        onClose={closeModal}
+        seriesId={seriesId}
+        handleUpdateAnime={handleUpdateAnime}
+      />
+
+      <ModalUpdateEntries
+        isOpen={modalState.includes('updateEntries')}
+        onClose={closeModal}
+        seriesId={seriesId}
+        entryId={entryId}
+        handleUpdateEntry={handleUpdateEntry}
+      />
+
+      <ConfirmationPopup
+        isOpen={modalState.includes('confirmation')}
+        onClose={closeModal}
+        name={confirmationName}
+        confirmDelete={handleConfirmDelete}
+        loading={confirmationLoading}
+        deleteEntriesState={deleteEntriesState}
+      />
     </div>
   );
 }

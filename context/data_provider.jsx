@@ -10,7 +10,7 @@ export function DataProvider({ children }) {
   const [addSeriesId, setAddSeriesId] = useState('');
   const [getSeriesId, setGetSeriesId] = useState('');
 
-  const passData = (newData) => {
+  const passData = (state, action) => {
     setUnprocessedData((prev) => ({ ...prev, ...newData }));
   };
 
