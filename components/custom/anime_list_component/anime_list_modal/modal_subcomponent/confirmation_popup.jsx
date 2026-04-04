@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { useData } from '@/context/data_provider';
 
 export function ConfirmationPopup({
   isOpen,
@@ -16,6 +17,7 @@ export function ConfirmationPopup({
   loading,
   deleteEntriesState,
 }) {
+  const { animeName } = useData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
@@ -26,7 +28,7 @@ export function ConfirmationPopup({
         </DialogHeader>
         <div className="text-center">
           Are you sure you want to delete "
-          <span className="italic underline">{name}</span>"{' '}
+          <span className="italic underline">{animeName}</span>"{' '}
           {deleteEntriesState ? '?' : 'and all of its entries?'}
         </div>
         {!loading ? (

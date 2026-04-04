@@ -12,6 +12,8 @@ export function DataProvider({ children }) {
   const [totalEntries, setTotalEntries] = useState(0);
   const [animeName, setAnimeName] = useState('');
   const [entryDetails, setEntryDetails] = useState({});
+  const [deleteSeriesState, setDeleteSeriesState] = useState(false);
+  const [deleteEntriesState, setDeleteEntriesState] = useState(false);
 
   const passData = (newData) => {
     setUnprocessedData((prev) => ({ ...prev, ...newData }));
@@ -37,6 +39,14 @@ export function DataProvider({ children }) {
             totalEpisode: dataBeingProcessed.totalEpisode,
             type: dataBeingProcessed.type,
           });
+          break;
+        case 'deleteSeries':
+          if (deleteSeriesState === false) {
+            setDeleteSeriesState(true);
+            break;
+          }
+          setDeleteSeriesState(false);
+          break;
       }
     };
     processData();
@@ -50,6 +60,8 @@ export function DataProvider({ children }) {
     totalEntries,
     animeName,
     entryDetails,
+    deleteSeriesState,
+    deleteEntriesState,
   };
 
   return <dataContext.Provider value={value}>{children}</dataContext.Provider>;

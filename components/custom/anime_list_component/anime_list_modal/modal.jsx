@@ -32,7 +32,6 @@ export function Modal({
         handleDeleteEntries={handleDeleteEntries}
         handleCancelDeleteEntries={handleCancelDeleteEntries}
         deleteEntriesState={deleteEntriesState}
-        seriesId={seriesId}
         entryUpdate={entryUpdate}
         deletedEntriesId={deletedEntriesId}
       ></ModalEntries>

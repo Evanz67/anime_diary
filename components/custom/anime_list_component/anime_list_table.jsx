@@ -22,17 +22,22 @@ import { useModal } from '@/context/modal_provider';
 import { useData } from '@/context/data_provider';
 
 export function AnimeListTable({
-  handleModalEntries,
   deletedSeriesId,
   seriesUpdate,
-  deleteSeriesState,
 }) {
   const columns = [
     { key: 'animeName', name: 'Anime Series' },
     { key: 'totalEntries', name: '# of Entries' },
   ];
   const { user } = useAuth();
-  const { addSeriesId, getSeriesId, passData, animeName, totalEntries } = useData();
+  const {
+    addSeriesId,
+    getSeriesId,
+    passData,
+    animeName,
+    totalEntries,
+    deleteSeriesState,
+  } = useData();
   const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -70,11 +75,16 @@ export function AnimeListTable({
   };
 
   const handleEntry = (row) => {
-    passData({ action: 'getSeries', getSeriesId: row.id, animeName: row.animeName });
-    if (!deleteSeriesState) {
+    passData({
+      action: 'getSeries',
+      getSeriesId: row.id,
+      animeName: row.animeName,
+    });
+    if (deleteSeriesState) { 
+      openModal('confirmation');
+    } else {
       openModal('entries');
     }
-    handleModalEntries(row);
   };
 
   useEffect(() => {

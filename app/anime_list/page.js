@@ -12,6 +12,7 @@ import {
 } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
+import { useData } from '@/context/data_provider';
 
 export default function AnimeList() {
   const [animeName, setAnimeName] = useState('');
@@ -23,21 +24,10 @@ export default function AnimeList() {
   const [deletedEntriesId, setDeletedEntriesId] = useState('');
   const [seriesUpdate, setSeriesUpdate] = useState({});
   const [entryUpdate, setEntryUpdate] = useState({});
-  const [deleteSeriesState, setDeleteSeriesState] = useState(false);
   const [deleteEntriesState, setDeleteEntriesState] = useState(false);
   const { user } = useAuth();
+  const { passData, deleteSeriesState } = useData();
   const { openModal, closeModal } = useModal();
-
-  const handleModalEntries = (row) => {
-    if (!deleteSeriesState) {
-      setAnimeName(row.animeName);
-      setSeriesId(row.id);
-    } else {
-      setSeriesId(row.id);
-      setconfirmationName(row.animeName);
-      openModal('confirmation');
-    }
-  };
 
   const handleModalEntriesDetails = (row) => {
     if (!deleteEntriesState) {
@@ -64,14 +54,6 @@ export default function AnimeList() {
     });
   };
 
-  const handleDeleteSeries = () => {
-    setDeleteSeriesState(true);
-  };
-
-  const handleCancelDeleteSeries = () => {
-    setDeleteSeriesState(false);
-  };
-
   const handleDeleteEntries = () => {
     setDeleteEntriesState(true);
   };
@@ -87,7 +69,7 @@ export default function AnimeList() {
       const seriesData = await getSeries(user);
       setDeletedSeriesId(deletedSeriesIdRef);
       if (seriesData.length === 0) {
-        setDeleteSeriesState(false);
+        passData({ action: 'deleteSeries' });
       }
       closeModal(); //close confirmation
     }
@@ -125,22 +107,24 @@ export default function AnimeList() {
             <Button
               variant="destructive"
               size="lg"
-              onClick={handleCancelDeleteSeries}
+              onClick={() => passData({ action: 'deleteSeries' })}
             >
               Cancel
             </Button>
           ) : (
-            <Button variant="secondary" size="lg" onClick={handleDeleteSeries}>
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => passData({ action: 'deleteSeries' })}
+            >
               Remove Series
             </Button>
           )}
         </div>
       </div>
       <AnimeListTable
-        handleModalEntries={handleModalEntries}
         deletedSeriesId={deletedSeriesId}
         seriesUpdate={seriesUpdate}
-        deleteSeriesState={deleteSeriesState}
       />
       <Modal
         handleModalEntriesDetails={handleModalEntriesDetails}

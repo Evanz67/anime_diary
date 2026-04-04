@@ -27,6 +27,7 @@ export default function Home() {
         setMoviesWatchedCount(await typesWatched(user, 'Movie'));
         setOVAWatchedCount(await typesWatched(user, 'OVA'));
         setONAWatchedCount(await typesWatched(user, 'ONA'));
+        console.log(episodesWatchedCount);
       }
     };
 
