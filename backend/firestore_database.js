@@ -146,7 +146,7 @@ export const getEntries = async (user, seriesId) => {
 };
 
 export const updateEntries = async (user, seriesId, entryId, entryNewData) => {
-  const dataKey = ['name', 'episode', 'type'];
+  const dataKey = ['entryName', 'totalEpisode', 'type'];
   try {
     const entriesRef = doc(
       db,

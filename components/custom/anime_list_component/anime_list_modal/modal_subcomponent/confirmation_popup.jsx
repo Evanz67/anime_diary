@@ -12,12 +12,11 @@ import { useData } from '@/context/data_provider';
 export function ConfirmationPopup({
   isOpen,
   onClose,
-  name,
   confirmDelete,
   loading,
   deleteEntriesState,
 }) {
-  const { animeName } = useData();
+  const { animeName, entryName } = useData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
@@ -28,6 +27,7 @@ export function ConfirmationPopup({
         </DialogHeader>
         <div className="text-center">
           Are you sure you want to delete "
+          {}
           <span className="italic underline">{animeName}</span>"{' '}
           {deleteEntriesState ? '?' : 'and all of its entries?'}
         </div>

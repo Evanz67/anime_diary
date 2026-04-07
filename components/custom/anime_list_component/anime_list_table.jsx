@@ -32,7 +32,7 @@ export function AnimeListTable({
   const { user } = useAuth();
   const {
     addSeriesId,
-    getSeriesId,
+    currentSeriesId,
     passData,
     animeName,
     totalEntries,
@@ -76,8 +76,8 @@ export function AnimeListTable({
 
   const handleEntry = (row) => {
     passData({
-      action: 'getSeries',
-      getSeriesId: row.id,
+      action: 'currentSeries',
+      currentSeriesId: row.id,
       animeName: row.animeName,
     });
     if (deleteSeriesState) { 
@@ -135,11 +135,13 @@ export function AnimeListTable({
   useEffect(() => {
     const updateEntryCount = () => {
       setLoading(true);
-      if (series.some((series) => series.id === getSeriesId)) {
-        const seriesData = series.find((series) => series.id === getSeriesId);
+      if (series.some((series) => series.id === currentSeriesId)) {
+        const seriesData = series.find(
+          (series) => series.id === currentSeriesId
+        );
         const newSeriesData = { ...seriesData, totalEntries: totalEntries };
         const updatedSeries = series.filter(
-          (series) => series.id !== getSeriesId
+          (series) => series.id !== currentSeriesId
         );
         setSeries([...updatedSeries, newSeriesData]);
       }

@@ -18,26 +18,19 @@ export default function AnimeList() {
   const [animeName, setAnimeName] = useState('');
   const [confirmationName, setconfirmationName] = useState('');
   const [confirmationLoading, setConfirmationLoading] = useState(false);
-  const [seriesId, setSeriesId] = useState('');
-  const [entryId, setEntryId] = useState('');
   const [deletedSeriesId, setDeletedSeriesId] = useState('');
   const [deletedEntriesId, setDeletedEntriesId] = useState('');
   const [seriesUpdate, setSeriesUpdate] = useState({});
   const [entryUpdate, setEntryUpdate] = useState({});
-  const [deleteEntriesState, setDeleteEntriesState] = useState(false);
   const { user } = useAuth();
-  const { passData, deleteSeriesState } = useData();
+  const {
+    passData,
+    deleteSeriesState,
+    deleteEntriesState,
+    currentSeriesId,
+    currentEntriesId,
+  } = useData();
   const { openModal, closeModal } = useModal();
-
-  const handleModalEntriesDetails = (row) => {
-    if (!deleteEntriesState) {
-      setEntryId(row.id);
-    } else {
-      setEntryId(row.id);
-      setconfirmationName(row.name);
-      openModal('confirmation');
-    }
-  };
 
   const handleUpdateAnime = (seriesId, newAnimeName) => {
     setSeriesUpdate({
@@ -54,18 +47,10 @@ export default function AnimeList() {
     });
   };
 
-  const handleDeleteEntries = () => {
-    setDeleteEntriesState(true);
-  };
-
-  const handleCancelDeleteEntries = () => {
-    setDeleteEntriesState(false);
-  };
-
   const handleConfirmDelete = async () => {
     setConfirmationLoading(true);
     if (deleteSeriesState) {
-      const deletedSeriesIdRef = await deleteSeries(user, seriesId);
+      const deletedSeriesIdRef = await deleteSeries(user, currentSeriesId);
       const seriesData = await getSeries(user);
       setDeletedSeriesId(deletedSeriesIdRef);
       if (seriesData.length === 0) {
@@ -74,8 +59,12 @@ export default function AnimeList() {
       closeModal(); //close confirmation
     }
     if (deleteEntriesState) {
-      const deletedEntriesRef = await deleteEntries(user, seriesId, entryId);
-      const entriesData = await getEntries(user, seriesId);
+      const deletedEntriesRef = await deleteEntries(
+        user,
+        currentSeriesId,
+        currentEntriesId
+      );
+      const entriesData = await getEntries(user, currentSeriesId);
       setDeletedEntriesId(deletedEntriesRef[0]);
       setSeriesRef((prev) => ({
         ...prev,
@@ -127,18 +116,14 @@ export default function AnimeList() {
         seriesUpdate={seriesUpdate}
       />
       <Modal
-        handleModalEntriesDetails={handleModalEntriesDetails}
         confirmationLoading={confirmationLoading}
         handleConfirmDelete={handleConfirmDelete}
         confirmationName={confirmationName}
-        seriesId={seriesId}
-        entryId={entryId}
+        seriesId={currentSeriesId}
+        entryId={currentEntriesId}
         handleUpdateAnime={handleUpdateAnime}
         handleUpdateEntry={handleUpdateEntry}
         entryUpdate={entryUpdate}
-        handleDeleteEntries={handleDeleteEntries}
-        handleCancelDeleteEntries={handleCancelDeleteEntries}
-        deleteEntriesState={deleteEntriesState}
         deletedEntriesId={deletedEntriesId}
       />
     </div>

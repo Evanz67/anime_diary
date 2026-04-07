@@ -7,7 +7,6 @@ import { ConfirmationPopup } from '@/components/custom/anime_list_component/anim
 import { useModal } from '@/context/modal_provider';
 
 export function Modal({
-  handleModalEntriesDetails,
   confirmationLoading,
   handleConfirmDelete,
   confirmationName,
@@ -28,10 +27,6 @@ export function Modal({
       <ModalEntries
         isOpen={modalState.includes('entries')}
         onClose={closeModal}
-        handleModalEntriesDetails={handleModalEntriesDetails}
-        handleDeleteEntries={handleDeleteEntries}
-        handleCancelDeleteEntries={handleCancelDeleteEntries}
-        deleteEntriesState={deleteEntriesState}
         entryUpdate={entryUpdate}
         deletedEntriesId={deletedEntriesId}
       ></ModalEntries>

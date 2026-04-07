@@ -27,10 +27,6 @@ import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 export function ModalEntries({
   isOpen,
   onClose,
-  handleModalEntriesDetails,
-  handleDeleteEntries,
-  handleCancelDeleteEntries,
-  deleteEntriesState,
   entryUpdate,
   deletedEntriesId,
 }) {
@@ -40,37 +36,46 @@ export function ModalEntries({
     { key: 'type', name: 'Type' },
   ];
   const { user } = useAuth();
-  const { getSeriesId, animeName, entryDetails } = useData();
+  const { passData, currentSeriesId, animeName, entryDetails, deleteEntriesState } =
+    useData();
   const { openModal } = useModal();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleEntryDetails = (row) => {
-    if (!deleteEntriesState) {
+    passData({
+      action: 'currentEntries',
+      currentEntriesId: row.id,
+      entryName: row.entryName,
+    });
+    if (deleteEntriesState) {
+      openModal('confirmation');
+    } else {
       openModal('updateEntries');
     }
-    handleModalEntriesDetails(row);
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!getSeriesId) {
+      if (!currentSeriesId) {
         return;
       }
       setLoading(true);
-      const data = await getEntries(user, getSeriesId);
+      const data = await getEntries(user, currentSeriesId);
       setEntries(data);
       setLoading(false);
     };
 
     const cleanUp = () => {
       setEntries([]);
-      handleCancelDeleteEntries();
+      if (deleteEntriesState) {
+        passData({ action: 'deleteEntries' });
+      }
     };
 
     fetchData();
     return cleanUp();
-  }, [user, getSeriesId]);
+  }, [user, currentSeriesId, isOpen]);
 
   useEffect(() => {
     setLoading(true);
@@ -137,11 +142,7 @@ export function ModalEntries({
           <Button
             variant={deleteEntriesState ? 'destructive' : 'secondary'}
             size="lg"
-            onClick={
-              deleteEntriesState
-                ? handleCancelDeleteEntries
-                : handleDeleteEntries
-            }
+            onClick={() => passData({ action: 'deleteEntries' })}
           >
             <Trash2 className="h-4 w-4" />
           </Button>

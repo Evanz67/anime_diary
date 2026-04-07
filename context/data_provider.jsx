@@ -7,10 +7,12 @@ const dataContext = createContext();
 export function DataProvider({ children }) {
   const [unprocessedData, setUnprocessedData] = useState({});
   const [addSeriesId, setAddSeriesId] = useState('');
-  const [getSeriesId, setGetSeriesId] = useState('');
+  const [currentSeriesId, setCurrentSeriesId] = useState('');
   const [addEntriesId, setAddEntriesId] = useState('');
+  const [currentEntriesId, setCurrentEntriesId] = useState('');
   const [totalEntries, setTotalEntries] = useState(0);
   const [animeName, setAnimeName] = useState('');
+  const [entryName, setEntryName] = useState('');
   const [entryDetails, setEntryDetails] = useState({});
   const [deleteSeriesState, setDeleteSeriesState] = useState(false);
   const [deleteEntriesState, setDeleteEntriesState] = useState(false);
@@ -27,8 +29,8 @@ export function DataProvider({ children }) {
           setAddSeriesId(dataBeingProcessed.addSeriesId);
           setAnimeName(dataBeingProcessed.animeName);
           break;
-        case 'getSeries':
-          setGetSeriesId(dataBeingProcessed.getSeriesId);
+        case 'currentSeries':
+          setCurrentSeriesId(dataBeingProcessed.currentSeriesId);
           setAnimeName(dataBeingProcessed.animeName);
           break;
         case 'addEntries':
@@ -40,12 +42,26 @@ export function DataProvider({ children }) {
             type: dataBeingProcessed.type,
           });
           break;
+        case 'currentEntries':
+          setCurrentEntriesId(dataBeingProcessed.currentEntriesId);
+          setEntryName(dataBeingProcessed.entryName);
+          break;
         case 'deleteSeries':
           if (deleteSeriesState === false) {
             setDeleteSeriesState(true);
             break;
           }
           setDeleteSeriesState(false);
+          break;
+        case 'deleteEntries':
+          if (deleteEntriesState === false) {
+            setDeleteEntriesState(true);
+            break;
+          }
+          setDeleteEntriesState(false);
+          break;
+        default:
+          console.log(action);
           break;
       }
     };
@@ -55,10 +71,12 @@ export function DataProvider({ children }) {
   const value = {
     passData,
     addSeriesId,
-    getSeriesId,
+    currentSeriesId,
     addEntriesId,
+    currentEntriesId,
     totalEntries,
     animeName,
+    entryName,
     entryDetails,
     deleteSeriesState,
     deleteEntriesState,
