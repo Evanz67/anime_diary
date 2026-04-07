@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ModalCardEntries } from '@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries';
-import { getEntries } from '@/backend/firestore_database';
+import { getEntries, entriesLiveUpdate } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useData } from '@/context/data_provider';
 import { useModal } from '@/context/modal_provider';
@@ -24,19 +24,14 @@ import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
-export function ModalEntries({
-  isOpen,
-  onClose,
-  entryUpdate,
-  deletedEntriesId,
-}) {
+export function ModalEntries({ isOpen, onClose }) {
   const columns = [
     { key: 'entryName', name: 'Entry Name' },
     { key: 'totalEpisode', name: '# of Episode' },
     { key: 'type', name: 'Type' },
   ];
   const { user } = useAuth();
-  const { passData, currentSeriesId, animeName, entryDetails, deleteEntriesState } =
+  const { passData, currentSeriesId, selectedAnimeName, deleteEntriesState } =
     useData();
   const { openModal } = useModal();
   const [entries, setEntries] = useState([]);
@@ -78,49 +73,24 @@ export function ModalEntries({
   }, [user, currentSeriesId, isOpen]);
 
   useEffect(() => {
-    setLoading(true);
-    setEntries((prev) => [...prev, entryDetails]);
-    setLoading(false);
-  }, [entryDetails]);
+    if (!currentSeriesId) {
+      return;
+    }
+    const unsubscribe = entriesLiveUpdate(user, currentSeriesId, setEntries);
 
-  useEffect(() => {
-    const updateEntryData = () => {
-      setLoading(true);
-      if (entries.some((entry) => entry.id === entryUpdate.id)) {
-        const entryData = entries.find((entry) => entry.id === entryUpdate.id);
-        const newEntryData = { ...entryData, ...entryUpdate };
-        const updatedEntries = entries.filter(
-          (entry) => entry.id !== entryUpdate.id
-        );
-        setEntries([...updatedEntries, newEntryData]);
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
-      setLoading(false);
     };
-
-    updateEntryData();
-  }, [entryUpdate]);
-
-  useEffect(() => {
-    const deleteEntries = () => {
-      setLoading(true);
-      if (entries.some((entry) => entry.id === deletedEntriesId)) {
-        const updatedEntries = entries.filter(
-          (entry) => entry.id !== deletedEntriesId
-        );
-        setEntries(updatedEntries);
-      }
-      setLoading(false);
-    };
-
-    deleteEntries();
-  }, [deletedEntriesId]);
+  }, [user, currentSeriesId]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl italic">
-            <span className="mr-2">{animeName}</span>
+            <span className="mr-2">{selectedAnimeName}</span>
             <Button
               variant="ghost"
               size="sm"

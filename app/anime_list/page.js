@@ -15,13 +15,8 @@ import { useModal } from '@/context/modal_provider';
 import { useData } from '@/context/data_provider';
 
 export default function AnimeList() {
-  const [animeName, setAnimeName] = useState('');
-  const [confirmationName, setconfirmationName] = useState('');
   const [confirmationLoading, setConfirmationLoading] = useState(false);
-  const [deletedSeriesId, setDeletedSeriesId] = useState('');
   const [deletedEntriesId, setDeletedEntriesId] = useState('');
-  const [seriesUpdate, setSeriesUpdate] = useState({});
-  const [entryUpdate, setEntryUpdate] = useState({});
   const { user } = useAuth();
   const {
     passData,
@@ -32,47 +27,21 @@ export default function AnimeList() {
   } = useData();
   const { openModal, closeModal } = useModal();
 
-  const handleUpdateAnime = (seriesId, newAnimeName) => {
-    setSeriesUpdate({
-      id: seriesId,
-      animeName: newAnimeName,
-    });
-    setAnimeName(newAnimeName);
-  };
-
-  const handleUpdateEntry = (entryId, newEntryData) => {
-    setEntryUpdate({
-      id: entryId,
-      ...newEntryData,
-    });
-  };
-
   const handleConfirmDelete = async () => {
     setConfirmationLoading(true);
     if (deleteSeriesState) {
-      const deletedSeriesIdRef = await deleteSeries(user, currentSeriesId);
+      await deleteSeries(user, currentSeriesId);
       const seriesData = await getSeries(user);
-      setDeletedSeriesId(deletedSeriesIdRef);
       if (seriesData.length === 0) {
         passData({ action: 'deleteSeries' });
       }
       closeModal(); //close confirmation
     }
     if (deleteEntriesState) {
-      const deletedEntriesRef = await deleteEntries(
-        user,
-        currentSeriesId,
-        currentEntriesId
-      );
+      await deleteEntries(user, currentSeriesId, currentEntriesId);
       const entriesData = await getEntries(user, currentSeriesId);
-      setDeletedEntriesId(deletedEntriesRef[0]);
-      setSeriesRef((prev) => ({
-        ...prev,
-        id: deletedEntriesRef[1],
-        entries: deletedEntriesRef[2],
-      }));
       if (entriesData.length === 0) {
-        setDeleteEntriesState(false);
+        passData({ action: 'deleteEntries' });
       }
       closeModal(); //close confirmation
     }
@@ -111,20 +80,10 @@ export default function AnimeList() {
           )}
         </div>
       </div>
-      <AnimeListTable
-        deletedSeriesId={deletedSeriesId}
-        seriesUpdate={seriesUpdate}
-      />
+      <AnimeListTable />
       <Modal
         confirmationLoading={confirmationLoading}
         handleConfirmDelete={handleConfirmDelete}
-        confirmationName={confirmationName}
-        seriesId={currentSeriesId}
-        entryId={currentEntriesId}
-        handleUpdateAnime={handleUpdateAnime}
-        handleUpdateEntry={handleUpdateEntry}
-        entryUpdate={entryUpdate}
-        deletedEntriesId={deletedEntriesId}
       />
     </div>
   );

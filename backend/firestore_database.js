@@ -10,6 +10,7 @@ import {
   query,
   collectionGroup,
   where,
+  onSnapshot,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -198,10 +199,9 @@ export const deleteEntries = async (user, seriesId, entryId) => {
     await deleteDoc(entriesRef);
     const entriesData = await getDocs(entriesRefCollection);
     await updateDoc(seriesRef, {
-      entries: entriesData.docs.length,
+      totalEntries: entriesData.docs.length,
     });
-    const data = [entryId, seriesId, entriesData.docs.length];
-    return data;
+    return entryId;
   } catch (error) {
     console.error('Error deleting document: ', error);
   }
@@ -221,4 +221,40 @@ export const getAllEntries = async (user) => {
   } catch (error) {
     console.error('Error getting all documents: ', error);
   }
+};
+
+export const animeListLiveUpdate = (user, setSeries) => {
+  const unsubscribe = onSnapshot(
+    collection(db, 'users', user.uid, 'series'),
+    (snapshot) => {
+      const seriesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSeries(seriesData);
+    },
+    (error) => {
+      console.error('Error with live update: ', error);
+    }
+  );
+
+  return unsubscribe;
+};
+
+export const entriesLiveUpdate = (user, seriesId, setEntries) => {
+  const unsubscribe = onSnapshot(
+    collection(db, 'users', user.uid, 'series', seriesId, 'entries'),
+    (snapshot) => {
+      const entriesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setEntries(entriesData);
+    },
+    (error) => {
+      console.error('Error with live update: ', error);
+    }
+  );
+
+  return unsubscribe;
 };

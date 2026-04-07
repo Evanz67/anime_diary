@@ -9,25 +9,26 @@ import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
+import { useData } from '@/context/data_provider';
 import { useState, useEffect } from 'react';
 import { updateSeries } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 
-export function ModalUpdateAnime({
-  isOpen,
-  onClose,
-  seriesId,
-  handleUpdateAnime,
-}) {
+export function ModalUpdateAnime({ isOpen, onClose, }) {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
+  const { passData, currentSeriesId } = useData();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await updateSeries(user, seriesId, data.animeName);
-      handleUpdateAnime(seriesId, data.animeName);
+      await updateSeries(user, currentSeriesId, data.animeName);
+      passData({
+        action: 'currentSeries',
+        currentSeriesId: currentSeriesId,
+        selectedAnimeName: data.animeName,
+      });
     } catch (error) {
       alert('Error updating series: ' + error.message);
     } finally {

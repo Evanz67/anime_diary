@@ -15,10 +15,10 @@ import { useData } from '@/context/data_provider';
 import { addEntry } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 
-export function ModalAddEntries({ isOpen, onClose, seriesId }) {
+export function ModalAddEntries({ isOpen, onClose }) {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
-  const { passData } = useData();
+  const { currentSeriesId } = useData();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -35,16 +35,9 @@ export function ModalAddEntries({ isOpen, onClose, seriesId }) {
     const entryDetails = { ...data, totalEpisode: parseInt(data.totalEpisode) };
     try {
       setLoading(true);
-      const entryRef = await addEntry(user, seriesId, {
+      await addEntry(user, currentSeriesId, {
         ...entryDetails,
         uid: user.uid,
-      });
-      //handleNewEntry({ id: entryRef.id, ...newData }, entryRef.seriesRef);
-      passData({
-        action: 'addEntries',
-        addEntriesId: entryRef.id,
-        totalEntries: entryRef.totalEntries,
-        ...entryDetails,
       });
     } catch (error) {
       alert('Error adding entry: ' + error.message);

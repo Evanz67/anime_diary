@@ -11,18 +11,17 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
+import { useData } from '@/context/data_provider';
 import { updateEntries } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 
 export function ModalUpdateEntries({
   isOpen,
   onClose,
-  seriesId,
-  entryId,
-  handleUpdateEntry,
 }) {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
+  const { currentSeriesId, currentEntriesId, passData } = useData();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -36,14 +35,22 @@ export function ModalUpdateEntries({
       alert('Please enter a valid type (TV, OVA, ONA, or Movie).');
       return;
     }
-    const newData = {
+    const entryDetails = {
       ...data,
       episode: data.episode === '' ? 0 : parseInt(data.episode),
     };
     try {
       setLoading(true);
-      const updatedData = await updateEntries(user, seriesId, entryId, newData);
-      handleUpdateEntry(entryId, updatedData);
+      await updateEntries(
+        user,
+        currentSeriesId,
+        currentEntriesId,
+        entryDetails
+      );
+      passData({
+        action: 'addEntries',
+        ...entryDetails,
+      });
     } catch (error) {
       alert('Error updating entry: ' + error.message);
     } finally {
@@ -70,7 +77,10 @@ export function ModalUpdateEntries({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
-            <Input {...register('name')} placeholder="Enter an entry name" />
+            <Input
+              {...register('entryName')}
+              placeholder="Enter an entry name"
+            />
           </Field>
           <Field>
             <FieldLabel className="italic"># of Episode</FieldLabel>
@@ -79,7 +89,7 @@ export function ModalUpdateEntries({
               step="1"
               min="1"
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register('episode')}
+              {...register('totalEpisode')}
               placeholder="Enter number of episodes"
             />
           </Field>

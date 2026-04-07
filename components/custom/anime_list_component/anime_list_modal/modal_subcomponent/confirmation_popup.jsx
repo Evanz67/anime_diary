@@ -14,9 +14,8 @@ export function ConfirmationPopup({
   onClose,
   confirmDelete,
   loading,
-  deleteEntriesState,
 }) {
-  const { animeName, entryName } = useData();
+  const { selectedAnimeName, entryName, deleteEntriesState } = useData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
@@ -26,9 +25,8 @@ export function ConfirmationPopup({
           </DialogTitle>
         </DialogHeader>
         <div className="text-center">
-          Are you sure you want to delete "
-          {}
-          <span className="italic underline">{animeName}</span>"{' '}
+          Are you sure you want to delete "{}
+          <span className="italic underline">{deleteEntriesState ? entryName : selectedAnimeName}</span>"{' '}
           {deleteEntriesState ? '?' : 'and all of its entries?'}
         </div>
         {!loading ? (

@@ -9,16 +9,6 @@ import { useModal } from '@/context/modal_provider';
 export function Modal({
   confirmationLoading,
   handleConfirmDelete,
-  confirmationName,
-  seriesId,
-  entryId,
-  handleUpdateAnime,
-  handleUpdateEntry,
-  entryUpdate,
-  handleDeleteEntries,
-  handleCancelDeleteEntries,
-  deleteEntriesState,
-  deletedEntriesId,
 }) {
   const { closeModal, modalState } = useModal();
 
@@ -27,8 +17,6 @@ export function Modal({
       <ModalEntries
         isOpen={modalState.includes('entries')}
         onClose={closeModal}
-        entryUpdate={entryUpdate}
-        deletedEntriesId={deletedEntriesId}
       ></ModalEntries>
 
       <ModalAddAnime
@@ -39,31 +27,23 @@ export function Modal({
       <ModalAddEntries
         isOpen={modalState.includes('addEntries')}
         onClose={closeModal}
-        seriesId={seriesId}
       />
 
       <ModalUpdateAnime
         isOpen={modalState.includes('updateAnime')}
         onClose={closeModal}
-        seriesId={seriesId}
-        handleUpdateAnime={handleUpdateAnime}
       />
 
       <ModalUpdateEntries
         isOpen={modalState.includes('updateEntries')}
         onClose={closeModal}
-        seriesId={seriesId}
-        entryId={entryId}
-        handleUpdateEntry={handleUpdateEntry}
       />
 
       <ConfirmationPopup
         isOpen={modalState.includes('confirmation')}
         onClose={closeModal}
-        name={confirmationName}
         confirmDelete={handleConfirmDelete}
         loading={confirmationLoading}
-        deleteEntriesState={deleteEntriesState}
       />
     </div>
   );

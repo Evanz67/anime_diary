@@ -16,28 +16,18 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
-import { getSeries } from '@/backend/firestore_database';
+import { getSeries, animeListLiveUpdate } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
 import { useData } from '@/context/data_provider';
 
-export function AnimeListTable({
-  deletedSeriesId,
-  seriesUpdate,
-}) {
+export function AnimeListTable() {
   const columns = [
     { key: 'animeName', name: 'Anime Series' },
     { key: 'totalEntries', name: '# of Entries' },
   ];
   const { user } = useAuth();
-  const {
-    addSeriesId,
-    currentSeriesId,
-    passData,
-    animeName,
-    totalEntries,
-    deleteSeriesState,
-  } = useData();
+  const { passData, deleteSeriesState } = useData();
   const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -45,7 +35,6 @@ export function AnimeListTable({
   });
   const [series, setSeries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [initializedState, setInitializedState] = useState(false);
 
   const totalPages = Math.ceil(series.length / pagination.pageSize);
   const startIndex = pagination.pageIndex * pagination.pageSize;
@@ -78,9 +67,9 @@ export function AnimeListTable({
     passData({
       action: 'currentSeries',
       currentSeriesId: row.id,
-      animeName: row.animeName,
+      selectedAnimeName: row.animeName,
     });
-    if (deleteSeriesState) { 
+    if (deleteSeriesState) {
       openModal('confirmation');
     } else {
       openModal('entries');
@@ -92,7 +81,6 @@ export function AnimeListTable({
       setLoading(true);
       const data = await getSeries(user);
       setSeries(data);
-      setInitializedState(true);
       setLoading(false);
     };
 
@@ -100,71 +88,14 @@ export function AnimeListTable({
   }, [user]);
 
   useEffect(() => {
-    if (initializedState) {
-      setLoading(true);
-      setSeries((prev) => [
-        ...prev,
-        { id: addSeriesId, totalEntries: 0, animeName: animeName },
-      ]);
-      setLoading(false);
-    }
-  }, [addSeriesId]);
+    const unsubscribe = animeListLiveUpdate(user, setSeries);
 
-  useEffect(() => {
-    const updateAnimeSeries = () => {
-      setLoading(true);
-      if (series.some((series) => series.id === seriesUpdate.id)) {
-        const seriesData = series.find(
-          (series) => series.id === seriesUpdate.id
-        );
-        const newSeriesData = {
-          ...seriesData,
-          animeName: seriesUpdate.animeName,
-        };
-        const updatedSeries = series.filter(
-          (series) => series.id !== seriesUpdate.id
-        );
-        setSeries([...updatedSeries, newSeriesData]);
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
-      setLoading(false);
     };
-
-    updateAnimeSeries();
-  }, [seriesUpdate]);
-
-  useEffect(() => {
-    const updateEntryCount = () => {
-      setLoading(true);
-      if (series.some((series) => series.id === currentSeriesId)) {
-        const seriesData = series.find(
-          (series) => series.id === currentSeriesId
-        );
-        const newSeriesData = { ...seriesData, totalEntries: totalEntries };
-        const updatedSeries = series.filter(
-          (series) => series.id !== currentSeriesId
-        );
-        setSeries([...updatedSeries, newSeriesData]);
-      }
-      setLoading(false);
-    };
-
-    updateEntryCount();
-  }, [totalEntries]);
-
-  useEffect(() => {
-    const deleteSeries = () => {
-      setLoading(true);
-      if (series.some((series) => series.id === deletedSeriesId)) {
-        const updatedSeries = series.filter(
-          (series) => series.id !== deletedSeriesId
-        );
-        setSeries(updatedSeries);
-      }
-      setLoading(false);
-    };
-
-    deleteSeries();
-  }, [deletedSeriesId]);
+  }, [user]);
 
   if (loading) {
     return (

@@ -25,13 +25,7 @@ export function ModalAddAnime({ isOpen, onClose }) {
     if (user) {
       try {
         setLoading(true);
-        const seriesId = await addSeries(user, data);
-        passData({
-          action: 'addSeries',
-          addSeriesId: seriesId,
-          totalEntries: 0,
-          animeName: data.animeName,
-        });
+        await addSeries(user, data);
       } catch (error) {
         alert('Error adding series: ' + error.message);
       } finally {
