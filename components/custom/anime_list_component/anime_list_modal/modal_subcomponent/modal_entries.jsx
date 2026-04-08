@@ -60,9 +60,10 @@ export function ModalEntries() {
       setEntries(data);
       setLoading(false);
     };
-
-    fetchData();
-  }, [user, currentSeriesId]);
+    if (modalState.includes('entries')) {
+      fetchData();
+    }
+  }, [user, currentSeriesId, modalState]);
 
   useEffect(() => {
     const cleanUp = () => {
