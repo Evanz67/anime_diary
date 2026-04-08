@@ -42,8 +42,7 @@ export const getUser = async (uid) => {
 export const addSeries = async (user, series) => {
   try {
     const docRef = await addDoc(collection(db, 'users', user.uid, 'series'), {
-      ...series,
-      totalEntries: 0,
+      ...series
     });
     return docRef.id;
   } catch (error) {
@@ -146,8 +145,18 @@ export const getEntries = async (user, seriesId) => {
   }
 };
 
-export const updateEntries = async (user, seriesId, entryId, entryNewData) => {
-  const dataKey = ['entryName', 'totalEpisode', 'type'];
+export const updateEntries = async (
+  user,
+  seriesId,
+  entryId,
+  entryNewData,
+  entriesKey
+) => {
+  const dataKey = [
+    entriesKey.entryName,
+    entriesKey.totalEpisode,
+    entriesKey.type,
+  ];
   try {
     const entriesRef = doc(
       db,

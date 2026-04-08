@@ -14,18 +14,21 @@ import { useState, useEffect } from 'react';
 import { addSeries } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
+import { useDataKey } from '@/context/data_provider';
 
 export function ModalAddAnime() {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
   const { closeModal, modalState } = useModal();
+  const { seriesKey } = useDataKey();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    const insertTotalEntries = { ...data, [seriesKey.totalEntries]: 0 };
     if (user) {
       try {
         setLoading(true);
-        await addSeries(user, data);
+        await addSeries(user, insertTotalEntries);
       } catch (error) {
         alert('Error adding series: ' + error.message);
       } finally {
@@ -55,7 +58,7 @@ export function ModalAddAnime() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register('animeName')}
+              {...register(seriesKey.animeName)}
               placeholder="Enter anime series name"
               required
             />

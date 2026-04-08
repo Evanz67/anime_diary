@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useModal } from '@/context/modal_provider';
-import { useData } from '@/context/data_provider';
+import { useData, useDataKey } from '@/context/data_provider';
 import { useState, useEffect } from 'react';
 import { updateSeries } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
@@ -19,6 +19,7 @@ export function ModalUpdateAnime() {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
   const { passData, currentSeriesId } = useData();
+  const { seriesKey } = useDataKey();
   const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +58,7 @@ export function ModalUpdateAnime() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register('animeName')}
+              {...register(seriesKey.animeName)}
               placeholder="Enter a new anime series name"
               required
             />

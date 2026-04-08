@@ -3,6 +3,21 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 
 const dataContext = createContext();
+const dataKeyContext = createContext();
+
+const STATIC_DATA_KEY = {
+  seriesColumn: [
+    { key: 'animeName', name: 'Anime Series' },
+    { key: 'totalEntries', name: '# of Entries' },
+  ],
+  entriesColumn: [
+    { key: 'entryName', name: 'Entry Name' },
+    { key: 'totalEpisode', name: '# of Episodes' },
+    { key: 'type', name: 'Type' },
+  ],
+  seriesKey: { animeName: 'animeName', totalEntries: 'totalEntries' },
+  entriesKey: { entryName: 'entryName', totalEpisode: 'totalEpisode', type: 'type' }
+};
 
 export function DataProvider({ children }) {
   const [unprocessedData, setUnprocessedData] = useState({});
@@ -51,6 +66,9 @@ export function DataProvider({ children }) {
     processData();
   }, [unprocessedData]);
 
+  /* Will keep it like this for now, but if there are more data to be passed 
+  around or if the app runs slow, I might need to create a seperate context 
+  and split up the data. Right now it runs fine. */
   const value = {
     passData,
     currentSeriesId,
@@ -61,7 +79,17 @@ export function DataProvider({ children }) {
     deleteEntriesState,
   };
 
-  return <dataContext.Provider value={value}>{children}</dataContext.Provider>;
+  const dataKeyValue = STATIC_DATA_KEY;
+
+  return (
+    <dataContext.Provider value={value}>
+      <dataKeyContext.Provider value={dataKeyValue}>
+        {children}
+      </dataKeyContext.Provider>
+    </dataContext.Provider>
+  );
 }
 
+// Might add some error handling here later if needed
 export const useData = () => useContext(dataContext);
+export const useDataKey = () => useContext(dataKeyContext);

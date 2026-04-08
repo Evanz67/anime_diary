@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
-import { useData } from '@/context/data_provider';
+import { useData, useDataKey } from '@/context/data_provider';
 import { updateEntries } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 
@@ -28,12 +28,17 @@ export function ModalUpdateEntries() {
   const { user } = useAuth();
   const { closeModal, modalState } = useModal();
   const { currentSeriesId, currentEntriesId, passData } = useData();
+  const { entriesKey } = useDataKey();
+
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
     const entryDetails = {
       ...data,
-      episode: data.episode === '' ? 0 : parseInt(data.episode),
+      [entriesKey.totalEpisode]:
+        data[entriesKey.totalEpisode] === ''
+          ? 0
+          : parseInt(data[entriesKey.totalEpisode]),
     };
     try {
       setLoading(true);
@@ -41,7 +46,8 @@ export function ModalUpdateEntries() {
         user,
         currentSeriesId,
         currentEntriesId,
-        entryDetails
+        entryDetails,
+        entriesKey
       );
       passData({
         action: 'addEntries',
@@ -77,7 +83,7 @@ export function ModalUpdateEntries() {
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
             <Input
-              {...register('entryName')}
+              {...register(entriesKey.entryName)}
               placeholder="Enter an entry name"
             />
           </Field>
@@ -88,14 +94,14 @@ export function ModalUpdateEntries() {
               step="1"
               min="1"
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register('totalEpisode')}
+              {...register(entriesKey.totalEpisode)}
               placeholder="Enter number of episodes"
             />
           </Field>
           <Field>
             <FieldLabel className="italic">Type</FieldLabel>
             <Controller
-              name="type"
+              name={entriesKey.type}
               control={control}
               defaultValue=""
               render={({ field }) => (

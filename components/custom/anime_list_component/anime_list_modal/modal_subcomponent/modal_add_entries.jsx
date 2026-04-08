@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
-import { useData } from '@/context/data_provider';
+import { useData, useDataKey } from '@/context/data_provider';
 import { addEntry } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 
@@ -28,6 +28,7 @@ export function ModalAddEntries() {
   const { user } = useAuth();
   const { currentSeriesId } = useData();
   const { closeModal, modalState } = useModal();
+  const { entriesKey } = useDataKey();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -35,7 +36,10 @@ export function ModalAddEntries() {
       alert('Please enter a type.');
       return;
     }
-    const entryDetails = { ...data, totalEpisode: parseInt(data.totalEpisode) };
+    const entryDetails = {
+      ...data,
+      [entriesKey.totalEpisode]: parseInt(data[entriesKey.totalEpisode]),
+    };
     try {
       setLoading(true);
       await addEntry(user, currentSeriesId, {
@@ -69,7 +73,7 @@ export function ModalAddEntries() {
           <Field>
             <FieldLabel className="italic">Entry Name</FieldLabel>
             <Input
-              {...register('entryName')}
+              {...register(entriesKey.entryName)}
               placeholder="Enter an entry name"
               required
             />
@@ -81,7 +85,7 @@ export function ModalAddEntries() {
               step="1"
               min="1"
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              {...register('totalEpisode')}
+              {...register(entriesKey.totalEpisode)}
               placeholder="Enter number of episodes"
               required
             />
@@ -89,7 +93,7 @@ export function ModalAddEntries() {
           <Field>
             <FieldLabel className="italic">Type</FieldLabel>
             <Controller
-              name="type"
+              name={entriesKey.type}
               control={control}
               defaultValue=""
               render={({ field }) => (

@@ -18,22 +18,19 @@ import {
 import { ModalCardEntries } from '@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries';
 import { getEntries, entriesLiveUpdate } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
-import { useData } from '@/context/data_provider';
+import { useData, useDataKey } from '@/context/data_provider';
 import { useModal } from '@/context/modal_provider';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
 export function ModalEntries() {
-  const columns = [
-    { key: 'entryName', name: 'Entry Name' },
-    { key: 'totalEpisode', name: '# of Episode' },
-    { key: 'type', name: 'Type' },
-  ];
+  
   const { user } = useAuth();
   const { passData, currentSeriesId, selectedAnimeName, deleteEntriesState } =
     useData();
   const { openModal, closeModal, modalState } = useModal();
+  const { entriesColumn } = useDataKey();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -134,7 +131,7 @@ export function ModalEntries() {
               <Table>
                 <TableHeader>
                   <TableRow className="text-lg">
-                    {columns.map((column) => (
+                    {entriesColumn.map((column) => (
                       <TableHead key={column.key} className="font-extrabold">
                         {column.name}
                       </TableHead>
@@ -148,7 +145,7 @@ export function ModalEntries() {
                       onClick={() => handleEntryDetails(row)}
                       className="cursor-pointer"
                     >
-                      {columns.map((column) => (
+                      {entriesColumn.map((column) => (
                         <TableCell key={column.key}>
                           {row[column.key]}
                         </TableCell>

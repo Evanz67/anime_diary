@@ -19,15 +19,12 @@ import {
 import { getSeries, animeListLiveUpdate } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
-import { useData } from '@/context/data_provider';
+import { useData, useDataKey } from '@/context/data_provider';
 
 export function AnimeListTable() {
-  const columns = [
-    { key: 'animeName', name: 'Anime Series' },
-    { key: 'totalEntries', name: '# of Entries' },
-  ];
   const { user } = useAuth();
   const { passData, deleteSeriesState } = useData();
+  const { seriesColumn } = useDataKey();
   const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -112,7 +109,7 @@ export function AnimeListTable() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted">
-              {columns.map((column) => (
+              {seriesColumn.map((column) => (
                 <TableHead key={column.key}>{column.name}</TableHead>
               ))}
             </TableRow>
@@ -124,7 +121,7 @@ export function AnimeListTable() {
                 onClick={() => handleEntry(row)}
                 className="cursor-pointer"
               >
-                {columns.map((column) => (
+                {seriesColumn.map((column) => (
                   <TableCell key={column.key}>{row[column.key]}</TableCell>
                 ))}
               </TableRow>
