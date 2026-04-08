@@ -13,12 +13,12 @@ import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { addSeries } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
-import { useData } from '@/context/data_provider';
+import { useModal } from '@/context/modal_provider';
 
-export function ModalAddAnime({ isOpen, onClose }) {
+export function ModalAddAnime() {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
-  const { passData } = useData();
+  const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -31,7 +31,7 @@ export function ModalAddAnime({ isOpen, onClose }) {
       } finally {
         setLoading(false);
         reset();
-        onClose();
+        closeModal();
       }
     } else {
       alert('Please login to add a series.');
@@ -39,13 +39,13 @@ export function ModalAddAnime({ isOpen, onClose }) {
   };
 
   useEffect(() => {
-    if (isOpen === false) {
+    if (!modalState.includes('addAnime')) {
       reset();
     }
-  }, [isOpen]);
+  }, [modalState]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('addAnime')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">

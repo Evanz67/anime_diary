@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
-export function ModalEntries({ isOpen, onClose }) {
+export function ModalEntries() {
   const columns = [
     { key: 'entryName', name: 'Entry Name' },
     { key: 'totalEpisode', name: '# of Episode' },
@@ -33,7 +33,7 @@ export function ModalEntries({ isOpen, onClose }) {
   const { user } = useAuth();
   const { passData, currentSeriesId, selectedAnimeName, deleteEntriesState } =
     useData();
-  const { openModal } = useModal();
+  const { openModal, closeModal, modalState } = useModal();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ export function ModalEntries({ isOpen, onClose }) {
       entryName: row.entryName,
     });
     if (deleteEntriesState) {
-      openModal('confirmation');
+      openModal('delete');
     } else {
       openModal('updateEntries');
     }
@@ -61,16 +61,20 @@ export function ModalEntries({ isOpen, onClose }) {
       setLoading(false);
     };
 
+    fetchData();
+  }, [user, currentSeriesId]);
+
+  useEffect(() => {
     const cleanUp = () => {
       setEntries([]);
       if (deleteEntriesState) {
         passData({ action: 'deleteEntries' });
       }
     };
-
-    fetchData();
-    return cleanUp();
-  }, [user, currentSeriesId, isOpen]);
+    if (!modalState.includes('entries')) {
+      cleanUp();
+    }
+  }, [modalState]);
 
   useEffect(() => {
     if (!currentSeriesId) {
@@ -86,7 +90,7 @@ export function ModalEntries({ isOpen, onClose }) {
   }, [user, currentSeriesId]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('entries')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl italic">

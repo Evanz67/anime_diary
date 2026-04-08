@@ -11,14 +11,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
+import { useModal } from '@/context/modal_provider';
 import { useData } from '@/context/data_provider';
 import { addEntry } from '@/backend/firestore_database';
 import { useState, useEffect } from 'react';
 
-export function ModalAddEntries({ isOpen, onClose }) {
+export function ModalAddEntries() {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
   const { currentSeriesId } = useData();
+  const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -44,18 +46,18 @@ export function ModalAddEntries({ isOpen, onClose }) {
     } finally {
       setLoading(false);
       reset();
-      onClose();
+      closeModal();
     }
   };
 
   useEffect(() => {
-    if (isOpen === false) {
+    if (!modalState.includes('addEntries')) {
       reset();
     }
-  }, [isOpen]);
+  }, [modalState]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('addEntries')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">

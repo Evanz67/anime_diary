@@ -70,7 +70,7 @@ export function AnimeListTable() {
       selectedAnimeName: row.animeName,
     });
     if (deleteSeriesState) {
-      openModal('confirmation');
+      openModal('delete');
     } else {
       openModal('entries');
     }

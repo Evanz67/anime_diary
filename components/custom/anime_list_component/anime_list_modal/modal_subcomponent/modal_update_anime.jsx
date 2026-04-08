@@ -9,15 +9,17 @@ import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
+import { useModal } from '@/context/modal_provider';
 import { useData } from '@/context/data_provider';
 import { useState, useEffect } from 'react';
 import { updateSeries } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 
-export function ModalUpdateAnime({ isOpen, onClose, }) {
+export function ModalUpdateAnime() {
   const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth();
   const { passData, currentSeriesId } = useData();
+  const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -34,18 +36,18 @@ export function ModalUpdateAnime({ isOpen, onClose, }) {
     } finally {
       setLoading(false);
       reset();
-      onClose();
+      closeModal();
     }
   };
 
   useEffect(() => {
-    if (isOpen === false) {
+    if (!modalState.includes('updateAnime')) {
       reset();
     }
-  }, [isOpen]);
+  }, [modalState]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('updateAnime')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
