@@ -42,7 +42,7 @@ export const getUser = async (uid) => {
 export const addSeries = async (user, series) => {
   try {
     const docRef = await addDoc(collection(db, 'users', user.uid, 'series'), {
-      ...series
+      ...series,
     });
     return docRef.id;
   } catch (error) {
@@ -233,6 +233,9 @@ export const getAllEntries = async (user) => {
 };
 
 export const animeListLiveUpdate = (user, setSeries) => {
+  if (!user) {
+    return;
+  }
   const unsubscribe = onSnapshot(
     collection(db, 'users', user.uid, 'series'),
     (snapshot) => {
@@ -251,6 +254,9 @@ export const animeListLiveUpdate = (user, setSeries) => {
 };
 
 export const entriesLiveUpdate = (user, seriesId, setEntries) => {
+  if (!user) {
+    return;
+  }
   const unsubscribe = onSnapshot(
     collection(db, 'users', user.uid, 'series', seriesId, 'entries'),
     (snapshot) => {
