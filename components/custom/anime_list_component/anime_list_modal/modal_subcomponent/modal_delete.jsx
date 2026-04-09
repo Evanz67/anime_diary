@@ -33,6 +33,7 @@ export function ModalDelete() {
   const { closeModal, modalState } = useModal();
 
   const handleDelete = async () => {
+    try {
       setLoading(true);
       if (deleteSeriesState) {
         await deleteSeries(user, currentSeriesId);
@@ -40,21 +41,24 @@ export function ModalDelete() {
         if (seriesData.length === 0) {
           passData({ action: 'deleteSeries' });
         }
-        closeModal(); //close confirmation
       }
       if (deleteEntriesState) {
         await deleteEntries(user, currentSeriesId, currentEntriesId);
         const entriesData = await getEntries(user, currentSeriesId);
         if (entriesData.length === 0) {
           passData({ action: 'deleteEntries' });
-        }
-        closeModal(); //close confirmation
+        }      
       }
+    } catch (error) {
+      console.error('Error deleting:', error);
+    } finally {
       setLoading(false);
-    };
+      closeModal();
+    }
 
-
-
+    
+    
+  };
 
   return (
     <Dialog open={modalState.includes('delete')} onOpenChange={closeModal}>

@@ -75,10 +75,15 @@ export function AnimeListTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const data = await getSeries(user);
-      setSeries(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const data = await getSeries(user);
+        setSeries(data);
+      } catch (error) {
+        console.error('Error fetching series:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();

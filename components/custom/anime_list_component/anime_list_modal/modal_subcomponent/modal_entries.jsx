@@ -25,7 +25,6 @@ import { useState, useEffect } from 'react';
 import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
 export function ModalEntries() {
-  
   const { user } = useAuth();
   const { passData, currentSeriesId, selectedAnimeName, deleteEntriesState } =
     useData();
@@ -52,10 +51,15 @@ export function ModalEntries() {
       if (!currentSeriesId) {
         return;
       }
-      setLoading(true);
-      const data = await getEntries(user, currentSeriesId);
-      setEntries(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const data = await getEntries(user, currentSeriesId);
+        setEntries(data);
+      } catch (error) {
+        console.error('Error fetching entries:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     if (modalState.includes('entries')) {
       fetchData();
