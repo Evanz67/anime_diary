@@ -10,6 +10,7 @@ import {
   query,
   collectionGroup,
   where,
+  onSnapshot,
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -41,8 +42,7 @@ export const getUser = async (uid) => {
 export const addSeries = async (user, series) => {
   try {
     const docRef = await addDoc(collection(db, 'users', user.uid, 'series'), {
-      ...series,
-      entries: 0,
+      ...series
     });
     return docRef.id;
   } catch (error) {
@@ -71,7 +71,7 @@ export const updateSeries = async (user, seriesId, seriesNewName) => {
   try {
     const seriesRef = doc(db, 'users', user.uid, 'series', seriesId);
     await updateDoc(seriesRef, {
-      name: seriesNewName,
+      animeName: seriesNewName,
     });
   } catch (error) {
     console.error('Error updating document: ', error);
@@ -110,12 +110,12 @@ export const addEntry = async (user, seriesId, entry) => {
     const entriesData = await getDocs(entriesRef);
     const seriesRef = doc(db, 'users', user.uid, 'series', seriesId);
     await updateDoc(seriesRef, {
-      entries: entriesData.docs.length,
+      totalEntries: entriesData.docs.length,
     });
-    const entryRef = [
-      docRef.id,
-      { id: seriesRef.id, entries: entriesData.docs.length },
-    ];
+    const entryRef = {
+      id: docRef.id,
+      totalEntries: entriesData.docs.length,
+    };
     return entryRef;
   } catch (error) {
     console.error('Error adding document: ', error);
@@ -145,8 +145,18 @@ export const getEntries = async (user, seriesId) => {
   }
 };
 
-export const updateEntries = async (user, seriesId, entryId, entryNewData) => {
-  const dataKey = ['name', 'episode', 'type'];
+export const updateEntries = async (
+  user,
+  seriesId,
+  entryId,
+  entryNewData,
+  entriesKey
+) => {
+  const dataKey = [
+    entriesKey.entryName,
+    entriesKey.totalEpisode,
+    entriesKey.type,
+  ];
   try {
     const entriesRef = doc(
       db,
@@ -198,10 +208,9 @@ export const deleteEntries = async (user, seriesId, entryId) => {
     await deleteDoc(entriesRef);
     const entriesData = await getDocs(entriesRefCollection);
     await updateDoc(seriesRef, {
-      entries: entriesData.docs.length,
+      totalEntries: entriesData.docs.length,
     });
-    const data = [entryId, seriesId, entriesData.docs.length];
-    return data;
+    return entryId;
   } catch (error) {
     console.error('Error deleting document: ', error);
   }
@@ -221,4 +230,40 @@ export const getAllEntries = async (user) => {
   } catch (error) {
     console.error('Error getting all documents: ', error);
   }
+};
+
+export const animeListLiveUpdate = (user, setSeries) => {
+  const unsubscribe = onSnapshot(
+    collection(db, 'users', user.uid, 'series'),
+    (snapshot) => {
+      const seriesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setSeries(seriesData);
+    },
+    (error) => {
+      console.error('Error with live update: ', error);
+    }
+  );
+
+  return unsubscribe;
+};
+
+export const entriesLiveUpdate = (user, seriesId, setEntries) => {
+  const unsubscribe = onSnapshot(
+    collection(db, 'users', user.uid, 'series', seriesId, 'entries'),
+    (snapshot) => {
+      const entriesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setEntries(entriesData);
+    },
+    (error) => {
+      console.error('Error with live update: ', error);
+    }
+  );
+
+  return unsubscribe;
 };

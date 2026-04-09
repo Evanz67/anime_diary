@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -6,7 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -14,107 +14,94 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ModalCardEntries } from "@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries";
-import { getEntries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import {
-  FilePlusCorner,
-  Trash2,
-  TextCursorInput,
-  SquarePen,
-} from "lucide-react";
+} from '@/components/ui/table';
+import { ModalCardEntries } from '@/components/custom/anime_list_component/anime_list_modal/modal_subcomponent/modal_card_entries';
+import { getEntries, entriesLiveUpdate } from '@/backend/firestore_database';
+import { useAuth } from '@/context/auth_provider';
+import { useData, useDataKey } from '@/context/data_provider';
+import { useModal } from '@/context/modal_provider';
+import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
+import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
-export function ModalEntries({
-  isOpen,
-  onClose,
-  handleOpenModalAddEntries,
-  handleModalUpdateAnime,
-  handleModalEntriesDetails,
-  handleDeleteEntries,
-  handleCancelDeleteEntries,
-  deleteEntriesState,
-  animeName,
-  seriesId,
-  newEntry,
-  entryUpdate,
-  deletedEntriesId,
-}) {
-  const columns = [
-    { key: "name", name: "Anime" },
-    { key: "episode", name: "# of Episode" },
-    { key: "type", name: "Type" },
-  ];
+export function ModalEntries() {
   const { user } = useAuth();
+  const { passData, currentSeriesId, selectedAnimeName, deleteEntriesState } =
+    useData();
+  const { openModal, closeModal, modalState } = useModal();
+  const { entriesColumn } = useDataKey();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const handleEntryDetails = (row) => {
+    passData({
+      action: 'currentEntries',
+      currentEntriesId: row.id,
+      entryName: row.entryName,
+    });
+    if (deleteEntriesState) {
+      openModal('delete');
+    } else {
+      openModal('updateEntries');
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const data = await getEntries(user, seriesId);
-      setEntries(data);
-      setLoading(false);
+      if (!currentSeriesId) {
+        return;
+      }
+      try {
+        setLoading(true);
+        const data = await getEntries(user, currentSeriesId);
+        setEntries(data);
+      } catch (error) {
+        console.error('Error fetching entries:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    if (isOpen === true) {
+    if (modalState.includes('entries')) {
       fetchData();
     }
-  }, [user, isOpen]);
+  }, [user, currentSeriesId, modalState]);
 
   useEffect(() => {
-    setLoading(true);
-    setEntries((prev) => [...prev, newEntry]);
-    setLoading(false);
-  }, [newEntry]);
-
-  useEffect(() => {
-    if (isOpen === false) {
+    const cleanUp = () => {
       setEntries([]);
-      handleCancelDeleteEntries();
+      if (deleteEntriesState) {
+        passData({ action: 'deleteEntries' });
+      }
+    };
+    if (!modalState.includes('entries')) {
+      cleanUp();
     }
-  }, [user, isOpen]);
+  }, [modalState]);
 
   useEffect(() => {
-    const updateEntryData = () => {
-      setLoading(true);
-      if (entries.some((entry) => entry.id === entryUpdate.id)) {
-        const entryData = entries.find((entry) => entry.id === entryUpdate.id);
-        const newEntryData = { ...entryData, ...entryUpdate };
-        const updatedEntries = entries.filter(
-          (entry) => entry.id !== entryUpdate.id,
-        );
-        setEntries([...updatedEntries, newEntryData]);
+    if (!currentSeriesId) {
+      return;
+    }
+    const unsubscribe = entriesLiveUpdate(user, currentSeriesId, setEntries);
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
-      setLoading(false);
     };
-
-    updateEntryData();
-  }, [entryUpdate]);
-
-  useEffect(() => {
-    const deleteEntries = () => {
-      setLoading(true);
-      if (entries.some((entry) => entry.id === deletedEntriesId)) {
-        const updatedEntries = entries.filter(
-          (entry) => entry.id !== deletedEntriesId,
-        );
-        setEntries(updatedEntries);
-      }
-      setLoading(false);
-    };
-
-    deleteEntries();
-  }, [deletedEntriesId]);
+  }, [user, currentSeriesId]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('entries')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-xl italic">
-            <span className="mr-2">{animeName}</span>
-            <Button variant="ghost" size="sm" onClick={handleModalUpdateAnime}>
+            <span className="mr-2">{selectedAnimeName}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => openModal('updateAnime')}
+            >
               <TextCursorInput />
             </Button>
           </DialogTitle>
@@ -124,18 +111,14 @@ export function ModalEntries({
           <Button
             variant="secondary"
             size="lg"
-            onClick={handleOpenModalAddEntries}
+            onClick={() => openModal('addEntries')}
           >
             <FilePlusCorner className="h-4 w-4" />
           </Button>
           <Button
-            variant={deleteEntriesState ? "destructive" : "secondary"}
+            variant={deleteEntriesState ? 'destructive' : 'secondary'}
             size="lg"
-            onClick={
-              deleteEntriesState
-                ? handleCancelDeleteEntries
-                : handleDeleteEntries
-            }
+            onClick={() => passData({ action: 'deleteEntries' })}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -152,7 +135,7 @@ export function ModalEntries({
               <Table>
                 <TableHeader>
                   <TableRow className="text-lg">
-                    {columns.map((column) => (
+                    {entriesColumn.map((column) => (
                       <TableHead key={column.key} className="font-extrabold">
                         {column.name}
                       </TableHead>
@@ -163,10 +146,10 @@ export function ModalEntries({
                   {entries.map((row) => (
                     <TableRow
                       key={row.id}
-                      onClick={() => handleModalEntriesDetails(row)}
+                      onClick={() => handleEntryDetails(row)}
                       className="cursor-pointer"
                     >
-                      {columns.map((column) => (
+                      {entriesColumn.map((column) => (
                         <TableCell key={column.key}>
                           {row[column.key]}
                         </TableCell>

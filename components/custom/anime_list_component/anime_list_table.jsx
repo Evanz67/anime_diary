@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -8,29 +8,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-react";
-import { getSeries } from "@/backend/firestore_database";
-import { useAuth } from "@/backend/auth_provider";
+} from 'lucide-react';
+import { getSeries, animeListLiveUpdate } from '@/backend/firestore_database';
+import { useAuth } from '@/context/auth_provider';
+import { useModal } from '@/context/modal_provider';
+import { useData, useDataKey } from '@/context/data_provider';
 
-export function AnimeListTable({
-  handleModalEntries,
-  newSeries,
-  deletedSeriesId,
-  seriesRef,
-  seriesUpdate,
-}) {
-  const columns = [
-    { key: "name", name: "Anime Series" },
-    { key: "entries", name: "# of Entries" },
-  ];
+export function AnimeListTable() {
   const { user } = useAuth();
+  const { passData, deleteSeriesState } = useData();
+  const { seriesColumn } = useDataKey();
+  const { openModal } = useModal();
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
@@ -65,73 +60,44 @@ export function AnimeListTable({
     }));
   };
 
+  const handleEntry = (row) => {
+    passData({
+      action: 'currentSeries',
+      currentSeriesId: row.id,
+      selectedAnimeName: row.animeName,
+    });
+    if (deleteSeriesState) {
+      openModal('delete');
+    } else {
+      openModal('entries');
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const data = await getSeries(user);
-      setSeries(data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const data = await getSeries(user);
+        setSeries(data);
+      } catch (error) {
+        console.error('Error fetching series:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, [user]);
 
   useEffect(() => {
-    setLoading(true);
-    setSeries((prev) => [...prev, { ...newSeries }]);
-    setLoading(false);
-  }, [newSeries]);
+    const unsubscribe = animeListLiveUpdate(user, setSeries);
 
-  useEffect(() => {
-    const updateAnimeSeries = () => {
-      setLoading(true);
-      if (series.some((series) => series.id === seriesUpdate.id)) {
-        const seriesData = series.find(
-          (series) => series.id === seriesUpdate.id,
-        );
-        const newSeriesData = { ...seriesData, name: seriesUpdate.name };
-        const updatedSeries = series.filter(
-          (series) => series.id !== seriesUpdate.id,
-        );
-        setSeries([...updatedSeries, newSeriesData]);
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
-      setLoading(false);
     };
-
-    updateAnimeSeries();
-  }, [seriesUpdate]);
-
-  useEffect(() => {
-    const updateEntryCount = () => {
-      setLoading(true);
-      if (series.some((series) => series.id === seriesRef.id)) {
-        const seriesData = series.find((series) => series.id === seriesRef.id);
-        const newSeriesData = { ...seriesData, entries: seriesRef.entries };
-        const updatedSeries = series.filter(
-          (series) => series.id !== seriesRef.id,
-        );
-        setSeries([...updatedSeries, newSeriesData]);
-      }
-      setLoading(false);
-    };
-
-    updateEntryCount();
-  }, [seriesRef]);
-
-  useEffect(() => {
-    const deleteSeries = () => {
-      setLoading(true);
-      if (series.some((series) => series.id === deletedSeriesId)) {
-        const updatedSeries = series.filter(
-          (series) => series.id !== deletedSeriesId,
-        );
-        setSeries(updatedSeries);
-      }
-      setLoading(false);
-    };
-
-    deleteSeries();
-  }, [deletedSeriesId]);
+  }, [user]);
 
   if (loading) {
     return (
@@ -148,7 +114,7 @@ export function AnimeListTable({
         <Table>
           <TableHeader>
             <TableRow className="bg-muted">
-              {columns.map((column) => (
+              {seriesColumn.map((column) => (
                 <TableHead key={column.key}>{column.name}</TableHead>
               ))}
             </TableRow>
@@ -157,10 +123,10 @@ export function AnimeListTable({
             {paginatedData.map((row) => (
               <TableRow
                 key={row.id}
-                onClick={() => handleModalEntries(row)}
+                onClick={() => handleEntry(row)}
                 className="cursor-pointer"
               >
-                {columns.map((column) => (
+                {seriesColumn.map((column) => (
                   <TableCell key={column.key}>{row[column.key]}</TableCell>
                 ))}
               </TableRow>
@@ -172,7 +138,7 @@ export function AnimeListTable({
       {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing {startIndex + 1}-{Math.min(endIndex, series.length)} of{" "}
+          Showing {startIndex + 1}-{Math.min(endIndex, series.length)} of{' '}
           {series.length}
         </div>
         <div className="flex items-center space-x-2">
