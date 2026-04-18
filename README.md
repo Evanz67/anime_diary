@@ -1,4 +1,4 @@
-Framework used: ShadUI/useForms/Tailwind CSS/lucide react
+Framework used: ShadUI/useForms/Tailwind CSS/lucide react/Tanshack
 
 Fix:
 

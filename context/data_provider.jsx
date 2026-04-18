@@ -7,16 +7,20 @@ const dataKeyContext = createContext();
 
 const STATIC_DATA_KEY = {
   seriesColumn: [
-    { key: 'animeName', name: 'Anime Series' },
-    { key: 'totalEntries', name: '# of Entries' },
+    { accessorKey: 'animeName', header: 'Anime Series' },
+    { accessorKey: 'totalEntries', header: '# of Entries' },
   ],
   entriesColumn: [
-    { key: 'entryName', name: 'Entry Name' },
-    { key: 'totalEpisode', name: '# of Episodes' },
-    { key: 'type', name: 'Type' },
+    { accessorKey: 'entryName', header: 'Entry Name' },
+    { accessorKey: 'totalEpisode', header: '# of Episodes' },
+    { accessorKey: 'type', header: 'Type' },
   ],
   seriesKey: { animeName: 'animeName', totalEntries: 'totalEntries' },
-  entriesKey: { entryName: 'entryName', totalEpisode: 'totalEpisode', type: 'type' }
+  entriesKey: {
+    entryName: 'entryName',
+    totalEpisode: 'totalEpisode',
+    type: 'type',
+  },
 };
 
 export function DataProvider({ children }) {
