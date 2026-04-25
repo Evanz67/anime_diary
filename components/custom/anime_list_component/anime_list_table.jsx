@@ -1,6 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  flexRender,
+} from '@tanstack/react-table';
 import {
   Table,
   TableBody,
@@ -9,62 +16,66 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
 import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import { getSeries, animeListLiveUpdate } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
 import { useData, useDataKey } from '@/context/data_provider';
 
-export function AnimeListTable() {
-  const { user } = useAuth();
-  const { passData, deleteSeriesState } = useData();
-  const { seriesColumn } = useDataKey();
-  const { openModal } = useModal();
+export function AnimeListTable({
+  globalFilter,
+  setGlobalFilter,
+  sorting,
+  setSorting,
+  setTable,
+}) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 15,
   });
+  const { seriesColumn } = useDataKey();
   const [series, setSeries] = useState([]);
+  const { user } = useAuth();
+  const { passData, deleteSeriesState } = useData();
+  const { openModal } = useModal();
   const [loading, setLoading] = useState(true);
 
-  const totalPages = Math.ceil(series.length / pagination.pageSize);
+  const table = useReactTable({
+    data: series,
+    columns: seriesColumn,
+    state: {
+      sorting,
+      globalFilter,
+      pagination,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  const totalPages = Math.ceil(
+    table.getCoreRowModel().rows.length / pagination.pageSize,
+  );
   const startIndex = pagination.pageIndex * pagination.pageSize;
   const endIndex = startIndex + pagination.pageSize;
-  const paginatedData = series.slice(startIndex, endIndex);
-
-  const goToFirstPage = () => {
-    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-  };
-  const goToPrevPage = () => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: Math.max(0, prev.pageIndex - 1),
-    }));
-  };
-  const goToNextPage = () => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: Math.min(totalPages - 1, prev.pageIndex + 1),
-    }));
-  };
-  const goToLastPage = () => {
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: totalPages - 1,
-    }));
-  };
 
   const handleEntry = (row) => {
+    const rowData = row.original;
     passData({
       action: 'currentSeries',
-      currentSeriesId: row.id,
-      selectedAnimeName: row.animeName,
+      currentSeriesId: rowData.id,
+      selectedAnimeName: rowData.animeName,
     });
     if (deleteSeriesState) {
       openModal('delete');
@@ -79,6 +90,7 @@ export function AnimeListTable() {
         setLoading(true);
         const data = await getSeries(user);
         setSeries(data);
+        setTable(table);
       } catch (error) {
         console.error('Error fetching series:', error);
       } finally {
@@ -113,21 +125,30 @@ export function AnimeListTable() {
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted">
-              {seriesColumn.map((column) => (
-                <TableHead key={column.key}>{column.name}</TableHead>
-              ))}
-            </TableRow>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow className="bg-muted" key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
-            {paginatedData.map((row) => (
+            {table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 onClick={() => handleEntry(row)}
                 className="cursor-pointer"
               >
-                {seriesColumn.map((column) => (
-                  <TableCell key={column.key}>{row[column.key]}</TableCell>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -145,16 +166,16 @@ export function AnimeListTable() {
           <Button
             variant="outline"
             size="icon"
-            onClick={goToFirstPage}
-            disabled={pagination.pageIndex === 0}
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
           >
             <ChevronsLeft className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            onClick={goToPrevPage}
-            disabled={pagination.pageIndex === 0}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -164,16 +185,16 @@ export function AnimeListTable() {
           <Button
             variant="outline"
             size="icon"
-            onClick={goToNextPage}
-            disabled={pagination.pageIndex === totalPages - 1}
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            onClick={goToLastPage}
-            disabled={pagination.pageIndex === totalPages - 1}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
           >
             <ChevronsRight className="h-4 w-4" />
           </Button>

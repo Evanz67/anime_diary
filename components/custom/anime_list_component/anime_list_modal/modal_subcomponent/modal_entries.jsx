@@ -136,8 +136,8 @@ export function ModalEntries() {
                 <TableHeader>
                   <TableRow className="text-lg">
                     {entriesColumn.map((column) => (
-                      <TableHead key={column.key} className="font-extrabold">
-                        {column.name}
+                      <TableHead key={column.accessorKey} className="font-extrabold">
+                        {column.header}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -150,8 +150,8 @@ export function ModalEntries() {
                       className="cursor-pointer"
                     >
                       {entriesColumn.map((column) => (
-                        <TableCell key={column.key}>
-                          {row[column.key]}
+                        <TableCell key={column.accessorKey}>
+                          {row[column.accessorKey]}
                         </TableCell>
                       ))}
                     </TableRow>
