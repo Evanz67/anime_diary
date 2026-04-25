@@ -12,7 +12,6 @@ import { getUser } from '@/backend/firestore_database';
 const menuItems = [
   { title: 'Dashboard', url: '/', icon: Home },
   { title: 'Anime List', url: '/anime_list', icon: Rows3 },
-  { title: 'Dropped List', url: '/calendar', icon: Trash },
 ];
 
 export function NavBar() {
@@ -51,7 +50,7 @@ export function NavBar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="flex h-16 items-center justify-between">
-        <div className="flex justify-between basis-3/5">
+        <div className="flex justify-between basis-4/7">
           <div className="flex items-center gap-2 ml-20">
             <span className="">
               <BookOpen className="h-13 w-15" />

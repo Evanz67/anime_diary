@@ -29,11 +29,16 @@ import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
 import { useData, useDataKey } from '@/context/data_provider';
 
-export function AnimeListTable({ globalFilter, setGlobalFilter }) {
-  const [sorting, setSorting] = useState([]);
+export function AnimeListTable({
+  globalFilter,
+  setGlobalFilter,
+  sorting,
+  setSorting,
+  setTable,
+}) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 15,
   });
   const { seriesColumn } = useDataKey();
   const [series, setSeries] = useState([]);
@@ -41,10 +46,6 @@ export function AnimeListTable({ globalFilter, setGlobalFilter }) {
   const { passData, deleteSeriesState } = useData();
   const { openModal } = useModal();
   const [loading, setLoading] = useState(true);
-
-  const totalPages = Math.ceil(series.length / pagination.pageSize);
-  const startIndex = pagination.pageIndex * pagination.pageSize;
-  const endIndex = startIndex + pagination.pageSize;
 
   const table = useReactTable({
     data: series,
@@ -63,8 +64,11 @@ export function AnimeListTable({ globalFilter, setGlobalFilter }) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  //------------------------------------------
-  
+  const totalPages = Math.ceil(
+    table.getCoreRowModel().rows.length / pagination.pageSize,
+  );
+  const startIndex = pagination.pageIndex * pagination.pageSize;
+  const endIndex = startIndex + pagination.pageSize;
 
   const handleEntry = (row) => {
     const rowData = row.original;
@@ -86,6 +90,7 @@ export function AnimeListTable({ globalFilter, setGlobalFilter }) {
         setLoading(true);
         const data = await getSeries(user);
         setSeries(data);
+        setTable(table);
       } catch (error) {
         console.error('Error fetching series:', error);
       } finally {

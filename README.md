@@ -1,9 +1,9 @@
-Framework used: ShadUI/useForms/Tailwind CSS/lucide react/Tanshack
+Framework used: ShadUI/useForms/Tailwind CSS/lucide react/Tanshack Table
 
 Fix:
 
 Features:
 
-- Sort and filter
+- Fix navbar
 - Score
-- Add a droplist
+- Determine if we put everything in data provider
