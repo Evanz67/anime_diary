@@ -13,12 +13,14 @@ const STATIC_DATA_KEY = {
   entriesColumn: [
     { accessorKey: 'entryName', header: 'Entry Name' },
     { accessorKey: 'totalEpisode', header: '# of Episodes' },
+    { accessorKey: 'rating', header: 'Rating' },
     { accessorKey: 'type', header: 'Type' },
   ],
   seriesKey: { animeName: 'animeName', totalEntries: 'totalEntries' },
   entriesKey: {
     entryName: 'entryName',
     totalEpisode: 'totalEpisode',
+    rating: 'rating',
     type: 'type',
   },
 };

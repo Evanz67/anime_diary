@@ -155,6 +155,7 @@ export const updateEntries = async (
   const dataKey = [
     entriesKey.entryName,
     entriesKey.totalEpisode,
+    entriesKey.rating,
     entriesKey.type,
   ];
   try {

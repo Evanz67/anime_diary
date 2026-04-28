@@ -4,5 +4,4 @@ Fix:
 
 Features:
 
-- Score
 - Add a date created field

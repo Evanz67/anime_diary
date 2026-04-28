@@ -36,9 +36,14 @@ export function ModalAddEntries() {
       alert('Please enter a type.');
       return;
     }
+    if (data.rating < 1 || data.rating > 10) {
+      alert('Please enter a rating between 1 and 10.');
+      return;
+    }
     const entryDetails = {
       ...data,
       [entriesKey.totalEpisode]: parseInt(data[entriesKey.totalEpisode]),
+      [entriesKey.rating]: parseInt(data[entriesKey.rating]),
     };
     try {
       setLoading(true);
@@ -87,6 +92,18 @@ export function ModalAddEntries() {
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               {...register(entriesKey.totalEpisode)}
               placeholder="Enter number of episodes"
+              required
+            />
+          </Field>
+          <Field>
+            <FieldLabel className="italic">Rating</FieldLabel>
+            <Input
+              type="number"
+              step="1"
+              min="1"
+              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...register(entriesKey.rating)}
+              placeholder="Enter rating (1-10)"
               required
             />
           </Field>
