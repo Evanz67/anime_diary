@@ -12,10 +12,12 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
 import { useState } from 'react';
+import { useModal } from '@/context/modal_provider';
 
-export function Login({ isOpen, onClose }) {
+export function Login() {
   const { register, handleSubmit, reset } = useForm();
   const { login } = useAuth();
+  const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -23,16 +25,16 @@ export function Login({ isOpen, onClose }) {
       setLoading(true);
       await login(data.email, data.password);
     } catch (error) {
-      alert('Error logging in user: ' + error.message);
+      alert('User not found or incorrect password. Please try again.');
     } finally {
       setLoading(false);
       reset();
-      onClose();
+      closeModal();
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('login')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-sm lg:max-w-md ">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center">

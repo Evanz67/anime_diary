@@ -13,10 +13,12 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '@/context/auth_provider';
 import { useState } from 'react';
 import { addUser } from '@/backend/firestore_database';
+import { useModal } from '@/context/modal_provider';
 
-export function SignUp({ isOpen, onClose }) {
+export function SignUp() {
   const { register, handleSubmit, reset } = useForm();
-  const { signUp, user } = useAuth();
+  const { signUp } = useAuth();
+  const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
@@ -36,12 +38,12 @@ export function SignUp({ isOpen, onClose }) {
     } finally {
       setLoading(false);
       reset();
-      onClose();
+      closeModal();
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={modalState.includes('signup')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-sm lg:max-w-md ">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center">

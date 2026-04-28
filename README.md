@@ -4,6 +4,5 @@ Fix:
 
 Features:
 
-- Fix navbar
 - Score
-- Determine if we put everything in data provider
+- Add a date created field

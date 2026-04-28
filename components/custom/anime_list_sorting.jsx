@@ -46,7 +46,7 @@ export function AnimeListSorting({ table, sorting }) {
           <SelectValue placeholder="Sort by..." />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="clear">Clear Sort</SelectItem>
+          <SelectItem value="clear">Default</SelectItem>
           {seriesColumn.map((column) => (
             <SelectItem key={column.accessorKey} value={column.accessorKey}>
               {column.header}
@@ -55,12 +55,11 @@ export function AnimeListSorting({ table, sorting }) {
         </SelectContent>
       </Select>
 
-      {currentSortColumn && (
+      {currentSortColumn !== 'clear' && (
         <Button
           variant="outline"
           size="sm"
           onClick={toggleDirection}
-          className="w-[100px]"
         >
           {sortDirection === 'asc' ? (
             <>
