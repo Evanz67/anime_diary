@@ -44,6 +44,7 @@ export function ModalAddEntries() {
       ...data,
       [entriesKey.totalEpisode]: parseInt(data[entriesKey.totalEpisode]),
       [entriesKey.rating]: parseInt(data[entriesKey.rating]),
+      created: new Date().toISOString(),
     };
     try {
       setLoading(true);

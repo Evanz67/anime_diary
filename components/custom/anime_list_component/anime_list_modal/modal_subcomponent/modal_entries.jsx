@@ -33,6 +33,7 @@ export function ModalEntries() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Gets the clicked row's data and passes the data to the data provider. Used for update and delete
   const handleEntryDetails = (row) => {
     passData({
       action: 'currentEntries',
@@ -46,6 +47,7 @@ export function ModalEntries() {
     }
   };
 
+  // Fetch entries when modal opens
   useEffect(() => {
     const fetchData = async () => {
       if (!currentSeriesId) {
@@ -54,7 +56,12 @@ export function ModalEntries() {
       try {
         setLoading(true);
         const data = await getEntries(user, currentSeriesId);
-        setEntries(data);
+        const sortedData = [...data].sort((a, b) => {
+          const dateA = new Date(a.created);
+          const dateB = new Date(b.created);
+          return dateA - dateB;
+        });
+        setEntries(sortedData);
       } catch (error) {
         console.error('Error fetching entries:', error);
       } finally {
@@ -66,6 +73,8 @@ export function ModalEntries() {
     }
   }, [user, currentSeriesId, modalState]);
 
+  /* Clean up entries data when modal closes so that the previous data 
+  is not displayed on a newly open entries modal, even if it only shows for a millisecond. */
   useEffect(() => {
     const cleanUp = () => {
       setEntries([]);
@@ -78,6 +87,8 @@ export function ModalEntries() {
     }
   }, [modalState]);
 
+  /* A listener that checks the database if there is any change and updates if 
+  there is, so that the user can see the changes without refreshing the page */
   useEffect(() => {
     if (!currentSeriesId) {
       return;
@@ -89,8 +100,9 @@ export function ModalEntries() {
         unsubscribe();
       }
     };
-  }, [user, currentSeriesId]);
-
+    /* Added the currentSeriesId dependency just incase the Dialog(modal) component 
+    from shadcn/ui does not unmount the component even if the Dialog component is close. */
+  }, [user, currentSeriesId]); 
   return (
     <Dialog open={modalState.includes('entries')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">
@@ -136,7 +148,10 @@ export function ModalEntries() {
                 <TableHeader>
                   <TableRow className="text-lg">
                     {entriesColumn.map((column) => (
-                      <TableHead key={column.accessorKey} className="font-extrabold">
+                      <TableHead
+                        key={column.accessorKey}
+                        className="font-extrabold"
+                      >
                         {column.header}
                       </TableHead>
                     ))}
