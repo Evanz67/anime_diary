@@ -55,6 +55,12 @@ export function AnimeListTable({
       globalFilter,
       pagination,
     },
+    initialState: {
+      sorting: [{ id: 'created', desc: false }],
+      columnVisibility: {
+        created: false,
+      },
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,

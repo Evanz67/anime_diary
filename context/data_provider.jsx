@@ -9,6 +9,12 @@ const STATIC_DATA_KEY = {
   seriesColumn: [
     { accessorKey: 'animeName', header: 'Anime Series' },
     { accessorKey: 'totalEntries', header: '# of Entries' },
+    {
+      accessorKey: 'created',
+      header: 'Created',
+      enableSorting: true,
+      enableHiding: true,
+    },
   ],
   entriesColumn: [
     { accessorKey: 'entryName', header: 'Entry Name' },
