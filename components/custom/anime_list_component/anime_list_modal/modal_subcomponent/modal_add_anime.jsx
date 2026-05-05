@@ -24,7 +24,7 @@ export function ModalAddAnime() {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    const insertTotalEntries = { ...data, [seriesKey.totalEntries]: 0 };
+    const insertTotalEntries = { ...data, [seriesKey.totalEntries]: 0, created: new Date() };
     if (user) {
       try {
         setLoading(true);

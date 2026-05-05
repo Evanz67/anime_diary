@@ -1,13 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { SignUp } from '@/components/custom/authentication/signup';
-import { Login } from '@/components/custom/authentication/login';
-import { Home, Rows3, Trash, BookOpen } from 'lucide-react';
+import { Home, Rows3, BookOpen } from 'lucide-react';
 import { useAuth } from '@/context/auth_provider';
 import { getUser } from '@/backend/firestore_database';
+import { useModal } from '@/context/modal_provider';
 
 const menuItems = [
   { title: 'Dashboard', url: '/', icon: Home },
@@ -15,27 +14,10 @@ const menuItems = [
 ];
 
 export function NavBar() {
-  const [isModalSignUpOpen, setIsModalSignUpOpen] = useState(false);
-  const [isModalLoginOpen, setIsModalLoginOpen] = useState(false);
   const [firstName, setFirstName] = useState('');
+  const { openModal } = useModal();
 
   const { user, logout } = useAuth();
-
-  const handleModalSignUp = () => {
-    setIsModalSignUpOpen(true);
-  };
-
-  const handleCloseModalSignUp = () => {
-    setIsModalSignUpOpen(false);
-  };
-
-  const handleModalLogin = () => {
-    setIsModalLoginOpen(true);
-  };
-
-  const handleCloseModalLogin = () => {
-    setIsModalLoginOpen(false);
-  };
 
   useEffect(() => {
     if (user) {
@@ -78,13 +60,17 @@ export function NavBar() {
           <div className="mr-8">
             {!user ? (
               <div className="flex gap-2">
-                <Button variant="ghost" size="lg" onClick={handleModalLogin}>
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  onClick={() => openModal('login')}
+                >
                   Login
                 </Button>
                 <Button
                   size="lg"
                   className="text-white"
-                  onClick={handleModalSignUp}
+                  onClick={() => openModal('signup')}
                 >
                   Sign Up
                 </Button>
@@ -100,8 +86,6 @@ export function NavBar() {
           </div>
         </div>
       </div>
-      <SignUp isOpen={isModalSignUpOpen} onClose={handleCloseModalSignUp} />
-      <Login isOpen={isModalLoginOpen} onClose={handleCloseModalLogin} />
     </header>
   );
 }

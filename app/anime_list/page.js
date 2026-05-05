@@ -14,7 +14,7 @@ export default function AnimeList() {
   const [globalFilter, setGlobalFilter] = useState('');
   const { openModal } = useModal();
   const [table, setTable] = useState(null);
-  const [sorting, setSorting] = useState([]);
+  const [sorting, setSorting] = useState([{ id: 'created', desc: false }]);
 
   return (
     <div className="container mx-auto flex-1 p-4">

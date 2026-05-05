@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import {
   Select,
@@ -15,11 +17,11 @@ export function AnimeListSorting({ table, sorting }) {
   const { seriesColumn } = useDataKey();
 
   const currentSort = sorting[0];
-  const currentSortColumn = currentSort?.id || 'clear';
+  const currentSortColumn = currentSort?.id || 'created';
 
   const handleSortChange = (columnId) => {
-    if (columnId === 'clear') {
-      table.setSorting([]);
+    if (columnId === 'created') {
+      table.setSorting([{ id: 'created', desc: false }]);
     } else {
       table.setSorting([{ id: columnId, desc: sortDirection === 'desc' }]);
     }
@@ -46,35 +48,30 @@ export function AnimeListSorting({ table, sorting }) {
           <SelectValue placeholder="Sort by..." />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="clear">Clear Sort</SelectItem>
-          {seriesColumn.map((column) => (
-            <SelectItem key={column.accessorKey} value={column.accessorKey}>
-              {column.header}
-            </SelectItem>
-          ))}
+          <SelectItem value="created">Default</SelectItem>
+          {seriesColumn
+            .filter((column) => column.accessorKey !== 'created')
+            .map((column) => (
+              <SelectItem key={column.accessorKey} value={column.accessorKey}>
+                {column.header}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
 
-      {currentSortColumn && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={toggleDirection}
-          className="w-[100px]"
-        >
-          {sortDirection === 'asc' ? (
-            <>
-              <ArrowUp className="h-4 w-4 mr-1" />
-              Ascending
-            </>
-          ) : (
-            <>
-              <ArrowDown className="h-4 w-4 mr-1" />
-              Descending
-            </>
-          )}
-        </Button>
-      )}
+      <Button variant="outline" size="sm" onClick={toggleDirection}>
+        {sortDirection === 'asc' ? (
+          <>
+            <ArrowUp className="h-4 w-4 mr-1" />
+            Ascending
+          </>
+        ) : (
+          <>
+            <ArrowDown className="h-4 w-4 mr-1" />
+            Descending
+          </>
+        )}
+      </Button>
     </div>
   );
 }

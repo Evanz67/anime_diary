@@ -33,12 +33,20 @@ export function ModalUpdateEntries() {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    if ((data.rating < 1 || data.rating > 10) && data.rating !== '') {
+      alert('Please enter a rating between 1 and 10.');
+      return;
+    }
     const entryDetails = {
       ...data,
       [entriesKey.totalEpisode]:
         data[entriesKey.totalEpisode] === ''
           ? 0
           : parseInt(data[entriesKey.totalEpisode]),
+      [entriesKey.rating]:
+        data[entriesKey.rating] === ''
+          ? 0
+          : parseInt(data[entriesKey.rating]),
     };
     try {
       setLoading(true);
@@ -96,6 +104,17 @@ export function ModalUpdateEntries() {
               className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               {...register(entriesKey.totalEpisode)}
               placeholder="Enter number of episodes"
+            />
+          </Field>
+          <Field>
+            <FieldLabel className="italic">Rating</FieldLabel>
+            <Input
+              type="number"
+              step="1"
+              min="1"
+              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              {...register(entriesKey.rating)}
+              placeholder="Enter rating (1-10)"
             />
           </Field>
           <Field>
