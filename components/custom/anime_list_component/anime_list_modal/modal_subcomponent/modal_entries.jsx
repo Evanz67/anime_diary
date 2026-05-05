@@ -22,6 +22,7 @@ import { useData, useDataKey } from '@/context/data_provider';
 import { useModal } from '@/context/modal_provider';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
+import { defaultEntriesSort } from '@/utils/default_entries_sort';
 import { FilePlusCorner, Trash2, TextCursorInput } from 'lucide-react';
 
 export function ModalEntries() {
@@ -32,6 +33,7 @@ export function ModalEntries() {
   const { entriesColumn } = useDataKey();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [entriesOpen, setEntriesOpen] = useState(false);
 
   // Gets the clicked row's data and passes the data to the data provider. Used for update and delete
   const handleEntryDetails = (row) => {
@@ -56,19 +58,16 @@ export function ModalEntries() {
       try {
         setLoading(true);
         const data = await getEntries(user, currentSeriesId);
-        const sortedData = [...data].sort((a, b) => {
-          const dateA = new Date(a.created);
-          const dateB = new Date(b.created);
-          return dateA - dateB;
-        });
+        const sortedData = defaultEntriesSort(data);
         setEntries(sortedData);
       } catch (error) {
         console.error('Error fetching entries:', error);
       } finally {
         setLoading(false);
+        setEntriesOpen(true);
       }
     };
-    if (modalState.includes('entries')) {
+    if (modalState.includes('entries') && !entriesOpen) {
       fetchData();
     }
   }, [user, currentSeriesId, modalState]);
@@ -84,6 +83,7 @@ export function ModalEntries() {
     };
     if (!modalState.includes('entries')) {
       cleanUp();
+      setEntriesOpen(false);
     }
   }, [modalState]);
 
@@ -102,7 +102,7 @@ export function ModalEntries() {
     };
     /* Added the currentSeriesId dependency just incase the Dialog(modal) component 
     from shadcn/ui does not unmount the component even if the Dialog component is close. */
-  }, [user, currentSeriesId]); 
+  }, [user, currentSeriesId]);
   return (
     <Dialog open={modalState.includes('entries')} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-2xl lg:max-w-6xl overflow-hidden">

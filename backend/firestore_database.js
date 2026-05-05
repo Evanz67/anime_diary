@@ -13,6 +13,7 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { defaultEntriesSort } from '@/utils/default_entries_sort';
 
 export const addUser = async (userData) => {
   try {
@@ -265,7 +266,8 @@ export const entriesLiveUpdate = (user, seriesId, setEntries) => {
         id: doc.id,
         ...doc.data(),
       }));
-      setEntries(entriesData);
+      const sortedData = defaultEntriesSort(entriesData);
+      setEntries(sortedData);
     },
     (error) => {
       console.error('Error with live update: ', error);
