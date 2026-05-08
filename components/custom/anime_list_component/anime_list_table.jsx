@@ -163,7 +163,7 @@ export function AnimeListTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2 items-center justify-between lg:flex-row ">
         <div className="text-sm text-muted-foreground">
           Showing {startIndex + 1}-{Math.min(endIndex, series.length)} of{' '}
           {series.length}

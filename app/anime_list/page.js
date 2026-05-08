@@ -18,21 +18,25 @@ export default function AnimeList() {
 
   return (
     <div className="container mx-auto flex-1 p-4">
-      <div className="flex justify-between mb-4">
-        <div className="flex gap-6">
-          <h1 className="text-2xl font-bold mt-1">Anime List</h1>
+      <div className="flex flex-col mb-4 gap-4 xl:flex-row xl:justify-between">
+        <div className="flex flex-col items-center gap-4 xl:flex-row xl:gap-6">
+          <h1 className="text-xl font-bold text-center xl:mt-1">Anime List</h1>
+          {/* Search Bar */}
           <Input
             placeholder={`Search ${'anime series'}...`}
             value={globalFilter ?? ''}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-120 h-10 rounded-full"
+            className="rounded-full h-10 md:w-120"
           />
-          {table && <AnimeListSorting table={table} sorting={sorting} />}
+          {/* Sorting Dropdown */}
+          <div>
+            {table && <AnimeListSorting table={table} sorting={sorting} />}
+          </div>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 justify-center">
           <Button
             variant="secondary"
-            size="lg"
+            className="px-4 py-2 2xl:px-7 2xl:py-5"
             onClick={() => openModal('addAnime')}
             disabled={deleteSeriesState}
           >
@@ -41,7 +45,7 @@ export default function AnimeList() {
           {deleteSeriesState ? (
             <Button
               variant="destructive"
-              size="lg"
+              className="px-4 py-2 2xl:px-7 2xl:py-5"
               onClick={() => passData({ action: 'deleteSeries' })}
             >
               Cancel
@@ -49,7 +53,7 @@ export default function AnimeList() {
           ) : (
             <Button
               variant="secondary"
-              size="lg"
+              className="px-4 py-2 2xl:px-7 2xl:py-5"
               onClick={() => passData({ action: 'deleteSeries' })}
             >
               Remove Series

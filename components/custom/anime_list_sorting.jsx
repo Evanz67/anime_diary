@@ -44,7 +44,7 @@ export function AnimeListSorting({ table, sorting }) {
   return (
     <div className="flex items-center gap-2">
       <Select value={currentSortColumn} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Sort by..." />
         </SelectTrigger>
         <SelectContent>
