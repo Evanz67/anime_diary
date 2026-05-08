@@ -66,7 +66,8 @@ export function NavBar() {
                 Login
               </Button>
               <Button
-                className="px-2 py-1 md:px-8 md:py-5"
+                variant="default"
+                className="text-white px-2 py-1 md:px-8 md:py-5"
                 onClick={() => openModal('signup')}
               >
                 Sign Up
