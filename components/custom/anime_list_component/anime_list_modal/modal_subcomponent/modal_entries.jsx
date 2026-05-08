@@ -119,23 +119,23 @@ export function ModalEntries() {
           </DialogTitle>
           <DialogDescription>28 Entries</DialogDescription>
         </DialogHeader>
-        <div className="flex gap-3">
+        <div className="flex gap-3 justify-center sm:justify-start">
           <Button
             variant="secondary"
             size="lg"
             onClick={() => openModal('addEntries')}
           >
-            <FilePlusCorner className="h-4 w-4" />
+            <FilePlusCorner className="size-4" />
           </Button>
           <Button
             variant={deleteEntriesState ? 'destructive' : 'secondary'}
             size="lg"
             onClick={() => passData({ action: 'deleteEntries' })}
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="size-4" />
           </Button>
         </div>
-        <div className="mt-1 max-h-[60vh] min-h-[30vh] overflow-x-auto">
+        <div className="mt-1 max-h-[45vh] min-h-[30vh] overflow-x-auto">
           <ModalCardEntries>
             {loading ? (
               <div className="flex items-center justify-center h-64">
