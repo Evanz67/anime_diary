@@ -11,24 +11,53 @@ import {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  deleteUser,
+  sendEmailVerification,
 } from '@/backend/firebase';
+import { deleteUserData } from '@/backend/firestore_database';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
+      setLoading(true);
+      if (user) {
+        user
+          .reload()
+          .then(() => {
+            if (!user.emailVerified) {
+              alert('Please verify your email before logging in. Check spam folder if you cannot find the email.');
+              return signOut(auth);
+            }
+          })
+          .then(() => {
+            if (user.emailVerified) {
+              setUser(user);
+            }
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
     });
     return unsubscribe;
   }, []);
 
-  const signUp = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email, password) => {
+    const userInfo = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+    alert(`User "${email}" signed up successfully!`);
+    await sendEmailVerification(userInfo.user);
+    await signOut(auth);
+    return userInfo;
   };
 
   const login = (email, password) => {
@@ -49,6 +78,31 @@ export function AuthProvider({ children }) {
     return updatePassword(auth.currentUser, newPassword);
   };
 
+  const deleteAccount = async (password) => {
+    const userBeingDeleted = auth.currentUser;
+    if (!userBeingDeleted) {
+      throw new Error('No user is currently logged in');
+    }
+    const credential = EmailAuthProvider.credential(
+      userBeingDeleted.email,
+      password,
+    );
+    {
+      /* I want to make sure that the data from user is deleted first. And if it fails, it will
+      abort the whole process. This is to make sure that if for some reason the data deletion fails, and the user account succeeds, then
+      we won't have to worry about the reference to that data being lost. */
+    }
+    try {
+      // If the user enters the wrong password, then nothing will happen and skips the whole process
+      await reauthenticateWithCredential(userBeingDeleted, credential);
+    } catch (error) {
+      throw new Error('Wrong password. Account deletion aborted.');
+    }
+    // If this fails, it will throw an error and skip the deletion process
+    await deleteUserData(userBeingDeleted);
+    await deleteUser(userBeingDeleted);
+  };
+
   const value = {
     user,
     signUp,
@@ -56,6 +110,7 @@ export function AuthProvider({ children }) {
     logout,
     resetPassword,
     changePassword,
+    deleteAccount,
   };
 
   if (loading) {

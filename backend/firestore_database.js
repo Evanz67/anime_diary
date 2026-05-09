@@ -49,6 +49,34 @@ export const updateUser = async (user, userData) => {
   }
 };
 
+export const deleteUserData = async (user) => {
+  try {
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error('User data not found');
+    }
+    const seriesRef = collection(db, 'users', user.uid, 'series');
+    const seriesSnapshot = await getDocs(seriesRef);
+    await Promise.all(
+      seriesSnapshot.docs.map(async (series) => {
+        const seriesDocRef = series.ref;
+        const entriesRef = collection(seriesDocRef, 'entries');
+        const entriesSnapshot = await getDocs(entriesRef);
+        await Promise.all(
+          entriesSnapshot.docs.map((entry) => deleteDoc(entry.ref)),
+        );
+        await deleteDoc(series.ref);
+      }),
+    );
+
+    await deleteDoc(userDocRef);
+  } catch (error) {
+    console.error('Error deleting document: ', error);
+    throw new Error('Error deleting user data: ' + error.message);
+  }
+};
+
 export const addSeries = async (user, series) => {
   try {
     const docRef = await addDoc(collection(db, 'users', user.uid, 'series'), {
@@ -94,7 +122,7 @@ export const deleteSeries = async (user, seriesId) => {
     const entriesRef = collection(seriesRef, 'entries');
     const entriesSnapshot = await getDocs(entriesRef);
     await Promise.all(
-      entriesSnapshot.docs.map((entry) => deleteDoc(entry.ref))
+      entriesSnapshot.docs.map((entry) => deleteDoc(entry.ref)),
     );
     await deleteDoc(seriesRef);
     return seriesId;
@@ -107,7 +135,7 @@ export const addEntry = async (user, seriesId, entry) => {
   try {
     const docRef = await addDoc(
       collection(db, 'users', user.uid, 'series', seriesId, 'entries'),
-      entry
+      entry,
     );
     const entriesRef = collection(
       db,
@@ -115,7 +143,7 @@ export const addEntry = async (user, seriesId, entry) => {
       user.uid,
       'series',
       seriesId,
-      'entries'
+      'entries',
     );
     const entriesData = await getDocs(entriesRef);
     const seriesRef = doc(db, 'users', user.uid, 'series', seriesId);
@@ -140,7 +168,7 @@ export const getEntries = async (user, seriesId) => {
       user.uid,
       'series',
       seriesId,
-      'entries'
+      'entries',
     );
     const entriesData = await getDocs(entriesRef);
     if (entriesData.docs.length === 0) {
@@ -160,7 +188,7 @@ export const updateEntries = async (
   seriesId,
   entryId,
   entryNewData,
-  entriesKey
+  entriesKey,
 ) => {
   const dataKey = [
     entriesKey.entryName,
@@ -176,7 +204,7 @@ export const updateEntries = async (
       'series',
       seriesId,
       'entries',
-      entryId
+      entryId,
     );
     const updatedData = {};
     dataKey.forEach((key) => {
@@ -205,7 +233,7 @@ export const deleteEntries = async (user, seriesId, entryId) => {
       'series',
       seriesId,
       'entries',
-      entryId
+      entryId,
     );
     const entriesRefCollection = collection(
       db,
@@ -213,7 +241,7 @@ export const deleteEntries = async (user, seriesId, entryId) => {
       user.uid,
       'series',
       seriesId,
-      'entries'
+      'entries',
     );
     const seriesRef = doc(db, 'users', user.uid, 'series', seriesId);
     await deleteDoc(entriesRef);
@@ -231,7 +259,7 @@ export const getAllEntries = async (user) => {
   try {
     const allEntriesRef = query(
       collectionGroup(db, 'entries'),
-      where('uid', '==', user.uid)
+      where('uid', '==', user.uid),
     );
     const allEntriesData = await getDocs(allEntriesRef);
     return allEntriesData.docs.map((doc) => ({
@@ -258,7 +286,7 @@ export const animeListLiveUpdate = (user, setSeries) => {
     },
     (error) => {
       console.error('Error with live update: ', error);
-    }
+    },
   );
 
   return unsubscribe;
@@ -280,7 +308,7 @@ export const entriesLiveUpdate = (user, seriesId, setEntries) => {
     },
     (error) => {
       console.error('Error with live update: ', error);
-    }
+    },
   );
 
   return unsubscribe;

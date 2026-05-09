@@ -5,6 +5,7 @@ import { ModalProfile } from '@/components/custom/account_component/modal_subcom
 import { ModalChangeName } from '@/components/custom/account_component/modal_subcomponent/modal_change_name';
 import { ModalForgotPassword } from '@/components/custom/account_component/modal_subcomponent/modal_forgot_password';
 import { ModalChangePassword } from '@/components/custom/account_component/modal_subcomponent/modal_change_password';
+import { ModalDeleteUser } from './modal_subcomponent/modal_delete_user';
 
 export function AccountModal() {
   const [changeName, setChangeName] = useState({});
@@ -16,6 +17,7 @@ export function AccountModal() {
       <ModalChangeName setChangeName={setChangeName} />
       <ModalForgotPassword />
       <ModalChangePassword />
+      <ModalDeleteUser />
     </div>
   );
 }

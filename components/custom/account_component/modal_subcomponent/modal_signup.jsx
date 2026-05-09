@@ -39,7 +39,6 @@ export function ModalSignUp() {
         email: data.email,
         uid: user.uid,
       });
-      alert(`User "${data.email}" signed up successfully!`);
     } catch (error) {
       alert('Error signing up user: ' + error.message);
     } finally {

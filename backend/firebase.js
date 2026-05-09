@@ -10,6 +10,8 @@ import {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  deleteUser,
+  sendEmailVerification,
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -33,4 +35,6 @@ export {
   updatePassword,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  deleteUser,
+  sendEmailVerification,
 };

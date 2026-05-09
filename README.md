@@ -4,8 +4,6 @@ Fix:
 
 Features:
 -signup verification
--confirm password
--delete account
 -env
 -tutorial
 -documentation

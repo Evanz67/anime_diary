@@ -15,8 +15,7 @@ import { useAuth } from '@/context/auth_provider';
 export function ModalProfile({ changeName }) {
   const [name, setName] = useState('');
   const { closeModal, modalState, openModal } = useModal();
-  const { user, resetPassword } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   // Fetch user data on component mount to set the initial name
   useEffect(() => {
@@ -49,7 +48,6 @@ export function ModalProfile({ changeName }) {
           variant="secondary"
           size="lg"
           onClick={() => openModal('changeName')}
-          disabled={loading}
         >
           Change Name
         </Button>
@@ -57,11 +55,14 @@ export function ModalProfile({ changeName }) {
           variant="secondary"
           size="lg"
           onClick={() => openModal('changePassword')}
-          disabled={loading}
         >
           Change Password
         </Button>
-        <Button variant="destructive" size="lg" disabled={loading}>
+        <Button
+          variant="destructive"
+          size="lg"
+          onClick={() => openModal('deleteUser')}
+        >
           Delete Account
         </Button>
       </DialogContent>
