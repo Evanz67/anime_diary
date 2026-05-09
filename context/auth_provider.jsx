@@ -20,30 +20,17 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setLoading(true);
       if (user) {
-        user
-          .reload()
-          .then(() => {
-            if (!user.emailVerified) {
-              alert('Please verify your email before logging in. Check spam folder if you cannot find the email.');
-              return signOut(auth);
-            }
-          })
-          .then(() => {
-            if (user.emailVerified) {
-              setUser(user);
-            }
-          })
-          .finally(() => setLoading(false));
-      } else {
-        setUser(null);
-        setLoading(false);
+        user.reload();
+        setIsEmailVerified(user.emailVerified);
       }
+      setUser(user);   
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -54,7 +41,9 @@ export function AuthProvider({ children }) {
       email,
       password,
     );
-    alert(`User "${email}" signed up successfully!`);
+    alert(
+      `User "${email}" signed up successfully! Please verify your email before logging in. Make sure to check you spam folder if you don't see the email in your inbox. If you need another verification email, please log in and go to your profile to click "Resend Verification Email".`,
+    );
     await sendEmailVerification(userInfo.user);
     await signOut(auth);
     return userInfo;
@@ -76,6 +65,16 @@ export function AuthProvider({ children }) {
     const credential = EmailAuthProvider.credential(user.email, oldPassword);
     await reauthenticateWithCredential(auth.currentUser, credential);
     return updatePassword(auth.currentUser, newPassword);
+  };
+
+  const resendVerificationEmail = async () => {
+    if (user) {
+      try {
+        await sendEmailVerification(user);
+      } catch (error) {
+        alert('Error resending verification email: ' + error.message);
+      }
+    }
   };
 
   const deleteAccount = async (password) => {
@@ -111,6 +110,8 @@ export function AuthProvider({ children }) {
     resetPassword,
     changePassword,
     deleteAccount,
+    resendVerificationEmail,
+    isEmailVerified,
   };
 
   if (loading) {

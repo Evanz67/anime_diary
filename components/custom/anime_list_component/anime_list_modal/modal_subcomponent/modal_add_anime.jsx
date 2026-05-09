@@ -18,12 +18,18 @@ import { useDataKey } from '@/context/data_provider';
 
 export function ModalAddAnime() {
   const { register, handleSubmit, reset } = useForm();
-  const { user } = useAuth();
+  const { user, isEmailVerified } = useAuth();
   const { closeModal, modalState } = useModal();
   const { seriesKey } = useDataKey();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
+    if (!isEmailVerified) {
+      alert(
+        'Please verify your email before adding a series. If you already verified, please log out and log back in to refresh your account status. If you need a new verification email, please go to your profile and click "Resend Verification Email".',
+      );
+      return;
+    }
     const insertTotalEntries = {
       ...data,
       [seriesKey.totalEntries]: 0,

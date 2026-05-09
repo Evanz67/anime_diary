@@ -15,7 +15,12 @@ import { useAuth } from '@/context/auth_provider';
 export function ModalProfile({ changeName }) {
   const [name, setName] = useState('');
   const { closeModal, modalState, openModal } = useModal();
-  const { user } = useAuth();
+  const { user, resendVerificationEmail, isEmailVerified } = useAuth();
+
+  const handleResendVerificationEmail = () => {
+    resendVerificationEmail();
+    alert('Verification email resent! Please check your inbox and spam folder.');
+  };
 
   // Fetch user data on component mount to set the initial name
   useEffect(() => {
@@ -58,6 +63,15 @@ export function ModalProfile({ changeName }) {
         >
           Change Password
         </Button>
+        {!isEmailVerified && (
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => handleResendVerificationEmail()}
+          >
+            Resend Verification Email
+          </Button>
+        )}
         <Button
           variant="destructive"
           size="lg"
