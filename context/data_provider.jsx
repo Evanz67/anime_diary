@@ -71,7 +71,6 @@ export function DataProvider({ children }) {
           setDeleteEntriesState(false);
           break;
         default:
-          console.log('The action is: ' + action);
           break;
       }
     };

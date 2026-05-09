@@ -1,12 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Home, Rows3, BookOpen } from 'lucide-react';
 import { useAuth } from '@/context/auth_provider';
-import { getUser } from '@/backend/firestore_database';
 import { useModal } from '@/context/modal_provider';
+import { AccountModal } from '@/components/custom/account_component/account_modal';
 
 const menuItems = [
   { title: 'Dashboard', url: '/', icon: Home },
@@ -14,20 +13,8 @@ const menuItems = [
 ];
 
 export function NavBar() {
-  const [firstName, setFirstName] = useState('');
   const { openModal } = useModal();
-
   const { user, logout } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      getUser(user.uid).then((userData) => {
-        if (userData) {
-          setFirstName(userData.firstName);
-        }
-      });
-    }
-  }, [user]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -78,7 +65,7 @@ export function NavBar() {
               <Button
                 variant="secondary"
                 className="px-2 py-1 md:px-8 md:py-5"
-                onClick={logout}
+                onClick={() => openModal('profile')}
               >
                 Profile
               </Button>
@@ -93,6 +80,7 @@ export function NavBar() {
           )}
         </div>
       </div>
+      <AccountModal />
     </header>
   );
 }

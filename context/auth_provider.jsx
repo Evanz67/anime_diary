@@ -7,6 +7,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from '@/backend/firebase';
 
 const AuthContext = createContext();
@@ -35,11 +39,23 @@ export function AuthProvider({ children }) {
     return signOut(auth);
   };
 
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
+  const changePassword = async (oldPassword, newPassword) => {
+    const credential = EmailAuthProvider.credential(user.email, oldPassword);
+    await reauthenticateWithCredential(auth.currentUser, credential);
+    return updatePassword(auth.currentUser, newPassword);
+  };
+
   const value = {
     user,
     signUp,
     login,
     logout,
+    resetPassword,
+    changePassword,
   };
 
   if (loading) {

@@ -11,59 +11,52 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import { addSeries } from '@/backend/firestore_database';
 import { useAuth } from '@/context/auth_provider';
 import { useModal } from '@/context/modal_provider';
-import { useDataKey } from '@/context/data_provider';
 
-export function ModalAddAnime() {
+export function ModalForgotPassword() {
   const { register, handleSubmit, reset } = useForm();
-  const { user } = useAuth();
+  const { resetPassword } = useAuth();
   const { closeModal, modalState } = useModal();
-  const { seriesKey } = useDataKey();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    const insertTotalEntries = {
-      ...data,
-      [seriesKey.totalEntries]: 0,
-      created: new Date(),
-    };
-    if (user) {
-      try {
-        setLoading(true);
-        await addSeries(user, insertTotalEntries);
-      } catch (error) {
-        alert('Error adding series: ' + error.message);
-      } finally {
-        setLoading(false);
-        reset();
-        closeModal();
-      }
-    } else {
-      alert('Please login to add a series.');
+    try {
+      setLoading(true);
+      await resetPassword(data.email);
+      alert('Password reset email sent. Please check your inbox.');
+    } catch (error) {
+      alert('Error resetting password: ' + error.message);
+    } finally {
+      setLoading(false);
+      reset();
+      closeModal();
     }
   };
 
   useEffect(() => {
-    if (!modalState.includes('addAnime')) {
+    if (!modalState.includes('forgotPassword')) {
       reset();
     }
   }, [modalState]);
 
   return (
-    <Dialog open={modalState.includes('addAnime')} onOpenChange={closeModal}>
+    <Dialog
+      open={modalState.includes('forgotPassword')}
+      onOpenChange={closeModal}
+    >
       <DialogContent className="sm:max-w-xl lg:max-w-2xl ">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
-            Add Anime Series
+            Forgot Password
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Field>
             <Input
-              {...register(seriesKey.animeName)}
-              placeholder="Enter anime series name"
+              {...register('email')}
+              placeholder="Enter your email"
+              type="email"
               required
             />
           </Field>
@@ -74,7 +67,11 @@ export function ModalAddAnime() {
               size="lg"
               disabled={loading}
             >
-              {loading ? <div>Adding series...</div> : <div>Add</div>}
+              {loading ? (
+                <div>Resetting password...</div>
+              ) : (
+                <div>Reset Password</div>
+              )}
             </Button>
           </div>
         </form>

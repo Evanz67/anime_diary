@@ -40,6 +40,15 @@ export const getUser = async (uid) => {
   }
 };
 
+export const updateUser = async (user, userData) => {
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    await updateDoc(userRef, userData);
+  } catch (error) {
+    console.error('Error updating document: ', error);
+  }
+};
+
 export const addSeries = async (user, series) => {
   try {
     const docRef = await addDoc(collection(db, 'users', user.uid, 'series'), {

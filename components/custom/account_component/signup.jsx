@@ -16,12 +16,19 @@ import { addUser } from '@/backend/firestore_database';
 import { useModal } from '@/context/modal_provider';
 
 export function SignUp() {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset, watch } = useForm();
   const { signUp } = useAuth();
   const { closeModal, modalState } = useModal();
   const [loading, setLoading] = useState(false);
 
+  const password = watch('password');
+  const isPasswordValid = password?.length >= 6;
+
   const onSubmit = async (data) => {
+    if (!isPasswordValid) {
+      alert('Password must be at least 6 characters long.');
+      return;
+    }
     try {
       setLoading(true);
       const userInfo = await signUp(data.email, data.password);
@@ -72,6 +79,7 @@ export function SignUp() {
             <Input
               {...register('email')}
               placeholder="Enter email address"
+              type="email"
               required
             />
           </Field>
@@ -84,6 +92,12 @@ export function SignUp() {
               required
             />
           </Field>
+          {password && (isPasswordValid ? 
+            null : (
+              <p className="text-red-500 text-sm">
+                Password must be at least 6 characters long.
+              </p>
+            ))}
           <div className="flex justify-center">
             <Button
               type="submit"
