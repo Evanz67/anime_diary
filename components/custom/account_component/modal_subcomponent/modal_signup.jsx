@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { addUser } from '@/backend/firestore_database';
 import { useModal } from '@/context/modal_provider';
 
-export function SignUp() {
+export function ModalSignUp() {
   const { register, handleSubmit, reset, watch } = useForm();
   const { signUp } = useAuth();
   const { closeModal, modalState } = useModal();
@@ -92,8 +92,8 @@ export function SignUp() {
               required
             />
           </Field>
-          {password && (isPasswordValid ? 
-            null : (
+          {password &&
+            (isPasswordValid ? null : (
               <p className="text-red-500 text-sm">
                 Password must be at least 6 characters long.
               </p>

@@ -12,7 +12,7 @@ import { getUser } from '@/backend/firestore_database';
 import { useModal } from '@/context/modal_provider';
 import { useAuth } from '@/context/auth_provider';
 
-export function Profile({ changeName }) {
+export function ModalProfile({ changeName }) {
   const [name, setName] = useState('');
   const { closeModal, modalState, openModal } = useModal();
   const { user, resetPassword } = useAuth();

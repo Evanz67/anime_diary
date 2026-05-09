@@ -14,7 +14,7 @@ import { useAuth } from '@/context/auth_provider';
 import { useState } from 'react';
 import { useModal } from '@/context/modal_provider';
 
-export function Login() {
+export function ModalLogin() {
   const { register, handleSubmit, reset } = useForm();
   const { login } = useAuth();
   const { closeModal, modalState, openModal } = useModal();
